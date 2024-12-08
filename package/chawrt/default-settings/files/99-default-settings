@@ -1,0 +1,136 @@
+#!/bin/sh
+
+# Constants
+HOSTNAME="chawrt"
+TIMEZONE="CST-8"
+ZONENAME="Asia/Shanghai"
+NTP_SERVERS="
+ntp.tencent.com
+ntp1.aliyun.com
+ntp.ntsc.ac.cn
+cn.ntp.org.cn
+"
+
+# Initialize cha_init if not exists
+init_cha_settings() {
+	uci -q get system.@cha_init[0] > "/dev/null" || uci -q add system cha_init > "/dev/null"
+}
+
+# Configure system settings
+configure_system() {
+	uci -q batch <<-EOF
+		set system.@system[0].hostname="${HOSTNAME}"
+		set system.@system[0].timezone="${TIMEZONE}"
+		set system.@system[0].zonename="${ZONENAME}"
+		set system.@system[0].langue="zh_cn"
+		
+		delete system.ntp.server
+EOF
+
+	# Add NTP servers
+	for server in ${NTP_SERVERS}; do
+		uci -q add_list system.ntp.server="${server}"
+	done
+
+	# Mark as configured
+	uci -q batch <<-EOF
+		set system.@cha_init[0].system_chn="1"
+		commit system
+EOF
+}
+
+# Configure rpcd settings
+configure_rpcd() {
+	uci -q batch <<-EOF
+		set rpcd.@rpcd[0].timeout="300"
+		commit rpcd
+EOF
+}
+
+# Confgure uhttpd settings
+configure_uhttpd() {
+	uci -q batch <<-EOF
+		set uhttpd.main.script_timeout="300"
+		set uhttpd.main.network_timeout="300"
+		commit uhttpd
+EOF
+}
+
+# Configure firewall settings
+configure_firewall() {
+	# Add rules to allow SSH and HTTP(s) from WAN
+	uci -q batch <<-EOF
+		add firewall rule
+		set firewall.@rule[-1].name="Allow-SSH"
+		set firewall.@rule[-1].src="wan"
+		set firewall.@rule[-1].proto="tcp"
+		set firewall.@rule[-1].dest_port="22"
+		set firewall.@rule[-1].target="ACCEPT"
+		
+		add firewall rule
+		set firewall.@rule[-1].name="Allow-HTTP"
+		set firewall.@rule[-1].src="wan"
+		set firewall.@rule[-1].proto="tcp"
+		set firewall.@rule[-1].dest_port="80"
+		set firewall.@rule[-1].target="ACCEPT"
+
+		add firewall rule
+		set firewall.@rule[-1].name="Allow-HTTPS"
+		set firewall.@rule[-1].src="wan"
+		set firewall.@rule[-1].proto="tcp"
+		set firewall.@rule[-1].dest_port="443"
+		set firewall.@rule[-1].target="ACCEPT"
+		
+		commit firewall
+EOF	
+}
+
+# Configure network settings
+configure_network() {
+	uci -q batch <<-EOF
+		set network.lan.ipaddr="192.168.80.1"
+		set network.lan.netmask="255.255.255.0"
+		commit network
+EOF
+}
+
+# Configure shinit settings
+configure_shinit() {
+	# add alias to /etc/shinit for common commands
+	[ -f /etc/shinit ] && {
+		echo "alias fopkg=opkg --force-reinstall " >> /etc/shinit
+	}
+}
+
+main() {
+	init_cha_settings
+	
+	# If system settings configured, skip
+	if [ "$(uci -q get system.@cha_init[0].system_chn)" = "1" ]; then
+		echo "System settings already configured, skip."
+		return
+	fi
+
+	# Configure system settings
+	configure_system
+
+	# Configure network settings
+	if [ "$(uci -q get network.lan.proto)" = "static" ]; then
+		configure_network
+	fi
+
+	# Check WAN protocol and configure firewall
+	if [ "$(uci -q get network.wan.proto)" = "dhcp" ]; then
+		configure_firewall
+	fi
+
+	# Configure rpcd settings
+	configure_rpcd
+
+	# Configure uhttpd settings
+	configure_uhttpd
+}
+
+main
+
+exit 0
