@@ -3,13 +3,15 @@
 		"https://downloads.sourceforge.net"
 	],
 	"@DEBIAN": [
+		"https://mirrors.tuna.tsinghua.edu.cn/debian",
+		"https://mirrors.ustc.edu.cn/debian",
 		"https://ftp.debian.org/debian",
 		"https://mirror.leaseweb.com/debian",
-		"https://mirror.netcologne.de/debian",
-		"https://mirrors.tuna.tsinghua.edu.cn/debian",
-		"https://mirrors.ustc.edu.cn/debian"
+		"https://mirror.netcologne.de/debian"
 	],
 	"@APACHE": [
+		"https://mirrors.tuna.tsinghua.edu.cn/apache",
+		"https://mirrors.ustc.edu.cn/apache",
 		"https://dlcdn.apache.org",
 		"https://mirror.aarnet.edu.au/pub/apache",
 		"https://mirror.csclub.uwaterloo.ca/apache",
@@ -22,19 +24,16 @@
 		"https://mirrors.tuna.tsinghua.edu.cn/apache",
 		"https://mirrors.ustc.edu.cn/apache"
 	],
-        "@GITHUB": [
-                "https://raw.githubusercontent.com"
-        ],
 	"@GNU": [
+		"https://mirrors.tuna.tsinghua.edu.cn/gnu",
+		"https://mirrors.ustc.edu.cn/gnu",
 		"https://ftpmirror.gnu.org",
 		"https://mirror.csclub.uwaterloo.ca/gnu",
 		"https://mirror.netcologne.de/gnu",
 		"https://www.nic.funet.fi/pub/gnu/gnu",
 		"https://mirror.navercorp.com/gnu",
 		"https://mirrors.rit.edu/gnu",
-		"https://ftp.gnu.org/gnu",
-		"https://mirrors.tuna.tsinghua.edu.cn/gnu",
-		"https://mirrors.ustc.edu.cn/gnu"
+		"https://ftp.gnu.org/gnu"
 	],
 	"@SAVANNAH": [
 		"https://download.savannah.nongnu.org/releases",
@@ -45,12 +44,14 @@
 		"https://cdimage.debian.org/mirror/gnu.org/savannah"
 	],
 	"@KERNEL": [
+		"https://mirrors.ustc.edu.cn/kernel.org",
 		"https://cdn.kernel.org/pub",
 		"https://mirrors.mit.edu/kernel",
 		"https://www.mirrorservice.org/sites/ftp.kernel.org/pub",
 		"https://mirrors.ustc.edu.cn/kernel.org"
 	],
 	"@GNOME": [
+		"https://mirrors.ustc.edu.cn/gnome/sources",
 		"https://download.gnome.org/sources",
 		"https://mirror.csclub.uwaterloo.ca/gnome/sources"
 	],
