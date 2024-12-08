@@ -130,6 +130,19 @@ add_class() {
 	json_close_object
 }
 
+add_mask() {
+	local cfg="$1"
+
+	config_get type "$cfg" type
+	config_get addr "$cfg" addr
+	config_get prefix "$cfg" prefix
+
+	json_add_object "$cfg"
+	json_add_string type "$type"
+	json_add_string addr "$addr"
+	json_add_int prefix "$prefix"
+	json_close_object
+}
 
 reload_service() {
 	json_init
@@ -149,6 +162,10 @@ reload_service() {
 
 	json_add_object devices
 	config_foreach add_interface device
+	json_close_object
+
+	json_add_object masks
+	config_foreach add_mask mask
 	json_close_object
 
 	ubus call qosify config "$(json_dump)"
