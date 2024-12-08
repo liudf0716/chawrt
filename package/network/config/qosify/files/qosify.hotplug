@@ -1,2 +1,19 @@
 #!/bin/sh
 ubus call qosify check_devices
+
+# if network lan is dhcp, then use the following
+proto=$(uci get network.lan.proto)
+if [ "$proto" = "dhcp" ]; then
+    interface=$(uci get network.lan.device)
+    if [ -z "$interface" ]; then
+        interface="br-lan"
+    fi
+    # get interface ip address
+    ipaddr=$(ip -4 addr show dev $interface | grep inet | awk '{print $2}' | cut -d'/' -f1)
+    if [ ! -z "$ipaddr" ]; then
+        uci -q set qosify.ipv4.addr=$ipaddr
+        uci -q set qosify.ipv4.prefix=16
+        uci commit qosify
+        /etc/init.d/qosify reload
+    fi
+fi
