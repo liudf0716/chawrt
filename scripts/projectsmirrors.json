@@ -3,13 +3,15 @@
 		"https://downloads.sourceforge.net"
 	],
 	"@DEBIAN": [
+		"https://mirrors.tuna.tsinghua.edu.cn/debian",
+		"https://mirrors.ustc.edu.cn/debian",
 		"https://ftp.debian.org/debian",
 		"https://mirror.leaseweb.com/debian",
-		"https://mirror.netcologne.de/debian",
-		"https://mirrors.tuna.tsinghua.edu.cn/debian",
-		"https://mirrors.ustc.edu.cn/debian"
+		"https://mirror.netcologne.de/debian"
 	],
 	"@APACHE": [
+		"https://mirrors.tuna.tsinghua.edu.cn/apache",
+		"https://mirrors.ustc.edu.cn/apache",
 		"https://dlcdn.apache.org",
 		"https://mirror.aarnet.edu.au/pub/apache",
 		"https://mirror.csclub.uwaterloo.ca/apache",
@@ -18,14 +20,14 @@
 		"https://mirror.navercorp.com/apache",
 		"https://ftp.jaist.ac.jp/pub/apache",
 		"https://apache.cs.utah.edu/apache.org",
-		"http://apache.mirrors.ovh.net/ftp.apache.org/dist",
-		"https://mirrors.tuna.tsinghua.edu.cn/apache",
-		"https://mirrors.ustc.edu.cn/apache"
+		"http://apache.mirrors.ovh.net/ftp.apache.org/dist"
 	],
-        "@GITHUB": [
-                "https://raw.githubusercontent.com"
-        ],
+	"@GITHUB": [
+			"https://raw.githubusercontent.com"
+	],
 	"@GNU": [
+		"https://mirrors.tuna.tsinghua.edu.cn/gnu",
+		"https://mirrors.ustc.edu.cn/gnu",
 		"https://ftpmirror.gnu.org",
 		"https://mirror.csclub.uwaterloo.ca/gnu",
 		"https://mirror.netcologne.de/gnu",
@@ -33,9 +35,7 @@
 		"https://www.nic.funet.fi/pub/gnu/gnu",
 		"https://mirror.navercorp.com/gnu",
 		"https://mirrors.rit.edu/gnu",
-		"https://ftp.gnu.org/gnu",
-		"https://mirrors.tuna.tsinghua.edu.cn/gnu",
-		"https://mirrors.ustc.edu.cn/gnu"
+		"https://ftp.gnu.org/gnu"
 	],
 	"@SAVANNAH": [
 		"https://download.savannah.nongnu.org/releases",
@@ -46,21 +46,21 @@
 		"https://cdimage.debian.org/mirror/gnu.org/savannah"
 	],
 	"@KERNEL": [
+		"https://mirrors.ustc.edu.cn/kernel.org",
 		"https://cdn.kernel.org/pub",
 		"https://mirrors.mit.edu/kernel",
 		"http://ftp.nara.wide.ad.jp/pub/kernel.org",
 		"http://www.ring.gr.jp/archives/linux/kernel.org",
 		"https://ftp.riken.jp/Linux/kernel.org",
-		"https://www.mirrorservice.org/sites/ftp.kernel.org/pub",
-		"https://mirrors.ustc.edu.cn/kernel.org"
+		"https://www.mirrorservice.org/sites/ftp.kernel.org/pub"
 	],
 	"@GNOME": [
+		"https://mirrors.ustc.edu.cn/gnome/sources",
 		"https://download.gnome.org/sources",
 		"https://mirror.csclub.uwaterloo.ca/gnome/sources",
 		"https://ftp.acc.umu.se/pub/GNOME/sources",
 		"http://ftp.cse.buffalo.edu/pub/Gnome/sources",
-		"http://ftp.nara.wide.ad.jp/pub/X11/GNOME/sources",
-		"https://mirrors.ustc.edu.cn/gnome/sources"
+		"http://ftp.nara.wide.ad.jp/pub/X11/GNOME/sources"
 	],
 	"@OPENWRT": [
 		"https://sources.cdn.openwrt.org",
