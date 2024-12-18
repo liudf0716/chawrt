@@ -102,6 +102,23 @@ configure_shinit() {
 	}
 }
 
+# Configure mesh settings, add mesh network
+configure_mesh() {
+	uci -q batch <<-EOF
+		add wireless wifi-iface
+		set wireless.@wifi-iface[-1].device='radio1'
+		set wireless.@wifi-iface[-1].network='lan'
+		set wireless.@wifi-iface[-1].mode='mesh'
+		set wireless.@wifi-iface[-1].encryption='sae'
+		set wireless.@wifi-iface[-1].key='apfree-wifidog'
+		set wireless.@wifi-iface[-1].mesh_id='chawrt-aw-mesh'
+		set wireless.@wifi-iface[-1].mesh_fwding='1'
+		set wireless.@wifi-iface[-1].mesh_rssi_threshold='0'
+		rename wireless.@wifi-iface[-1]='default_radio1'
+		commit wireless
+EOF
+}
+
 main() {
 	init_cha_settings
 	
@@ -129,6 +146,9 @@ main() {
 
 	# Configure uhttpd settings
 	configure_uhttpd
+
+	# Configure mesh settings
+	configure_mesh
 }
 
 main
