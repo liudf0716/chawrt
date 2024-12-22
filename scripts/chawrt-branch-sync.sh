@@ -7,20 +7,18 @@ if ! git fetch origin; then
     exit 1
 fi
 
-for branch in $branches
-do
-    echo "Syncing branch $branch..."
-    git checkout $branch
+branches=$(git branch | tr -d ' *')
+
+# step 2: sync branches
+for branch in $branches; do
+    echo "Syncing branch: $branch"
     if ! git checkout "$branch"; then
-        echo "Failed to checkout branch $branch"
-        continue
+        echo "Failed to checkout branch: $branch"
+        exit 1
     fi
-    
-    echo "Prompt user the following operation will reset hard origin/$branch"
-    read -p "Do you want to continue? (y/n) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-        git reset --hard origin/$branch
+
+    if ! git rebase  "origin/$branch"; then
+        echo "Failed to pull branch: $branch"
+        exit 1
     fi
 done
