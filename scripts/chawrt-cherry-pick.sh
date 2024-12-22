@@ -43,6 +43,10 @@ echo "Original branch: $ORIGINAL_BRANCH"
 echo "Switching to branch '$BRANCH'..."
 git checkout $BRANCH || exit 1
 
+echo "git fetch origin and rebase origin/$BRANCH"
+git fetch origin
+git rebase origin/$BRANCH
+
 # Cherry-pick the commit
 echo "Cherry-picking commit '$COMMIT'..."
 if git cherry-pick $COMMIT; then
