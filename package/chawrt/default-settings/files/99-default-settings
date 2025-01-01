@@ -114,6 +114,7 @@ configure_mesh() {
 		set wireless.@wifi-iface[-1].mesh_id='chawrt-aw-mesh'
 		set wireless.@wifi-iface[-1].mesh_fwding='1'
 		set wireless.@wifi-iface[-1].mesh_rssi_threshold='0'
+		set wireless.@wifi-iface[-1].disabled='1'
 		rename wireless.@wifi-iface[-1]='default_radio1'
 		commit wireless
 EOF
