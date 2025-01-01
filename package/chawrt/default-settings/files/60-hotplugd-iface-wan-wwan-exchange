@@ -1,0 +1,90 @@
+#!/bin/sh
+
+# Constants
+WAN_INTERFACE="wan"
+WWAN_INTERFACE="wwan"
+LOGGER_TAG="wan-wwan-exchange"
+
+# Helper functions
+log_message() {
+    logger -t "$LOGGER_TAG" -p notice "$1"
+}
+
+get_wireless_config() {
+    uci_output=$(uci show wireless)
+    if [ -z "$uci_output" ]; then
+        log_message "Wireless configuration not found"
+        exit 1
+    fi
+    echo "$uci_output"
+}
+
+is_apfree_wifidog_installed() {
+    [ -n "$(opkg list-installed | grep apfree-wifidog)" ] && return 0 || return 1
+}
+
+get_wwan_interface_name() {
+    echo "$1" | grep -E 'network=.*wwan' | cut -d '.' -f 2 | sed 's/=.*//'
+}
+
+is_wwan_up() {
+    [ "$(ubus call network.interface.wwan status | jsonfilter -e '@["up"]')" = "true" ]
+}
+
+update_wifidogx_interface() {
+    local interface="$1"
+    if [ -z "$interface" ]; then
+        log_message "External interface not provided"
+        return 1
+    fi
+
+    if ! is_apfree_wifidog_installed; then
+        log_message "apfree-wifidog not installed"
+        return 1
+    fi
+
+    log_message "Updating wifidogx configuration with external interface $interface"
+    uci set wifidogx.common.external_interface="$interface"
+    uci commit wifidogx
+}
+
+set_wireless_client_state() {
+    local state="$1"
+    local uci_output=$(get_wireless_config)
+    
+    log_message "Wireless STA client interface state: $state"
+
+    [ -n "$(uci -q get network.wwan)" ] || {
+        log_message "WWAN interface not found"
+        return 0
+    }
+
+    local wwan_iface=$(get_wwan_interface_name "$uci_output")
+    if [ -z "$wwan_iface" ]; then
+        log_message "Wireless STA client interface not found"
+        return 0
+    fi
+
+    log_message "$([ "$state" = "1" ] && echo "Dis" || echo "En")abling wireless STA client interface $wwan_iface"
+    uci set wireless.$wwan_iface.disabled=$state
+    uci commit wireless
+    update_wifidogx_interface $([ "$state" = "1" ] && echo "wan" || echo "wwan")
+    wifi
+}
+
+log_message "apcli event: $ACTION $INTERFACE"
+[ "$INTERFACE" = "$WAN_INTERFACE" ] && {
+    # Main logic
+    case "$ACTION" in
+        'ifup') 
+            log_message "WAN interface $INTERFACE is up"  
+            set_wireless_client_state 1
+            ;;
+        'ifdown') 
+            log_message "WAN interface $INTERFACE is down"
+            set_wireless_client_state 0
+            ;;
+    esac
+}
+
+
