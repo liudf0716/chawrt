@@ -1,0 +1,100 @@
+#!/bin/sh
+
+# Constants
+WDCTLX="/usr/bin/wdctlx"
+WAN_INTERFACE="wwan"
+LOGGER_TAG="wwan-lan-conflict"
+
+# Helper functions
+log_message() {
+    logger -t "$LOGGER_TAG" -p notice "$1"
+}
+
+calculate_network_address() {
+    local ip=$1
+    local mask=$2
+    local ip_int mask_int network_int
+
+    ip_int=$(echo "$ip" | awk -F'.' '{print ($1 * 16777216) + ($2 * 65536) + ($3 * 256) + $4}')
+    mask_int=$(echo "$mask" | awk -F'.' '{print ($1 * 16777216) + ($2 * 65536) + ($3 * 256) + $4}')
+    network_int=$((ip_int & mask_int))
+    echo "$((network_int >> 24 & 255)).$((network_int >> 16 & 255)).$((network_int >> 8 & 255)).$((network_int & 255))"
+}
+
+# Ensure necessary environment variables are set
+[ -z "$INTERFACE" ] && log_message "INTERFACE not set" && exit 1
+[ -z "$ACTION" ] && log_message "ACTION not set" && exit 1
+[ -z "$DEVICE" ] && log_message "DEVICE not set" && exit 1
+
+
+
+log_message "Interface: $INTERFACE, Action: $ACTION, DEVICE: $DEVICE, IFUPDATE_ADDRESSES: $IFUPDATE_ADDRESSES"
+if [ "$INTERFACE" != "$WAN_INTERFACE" ] || [ "$ACTION" != "ifup" ]; then
+    log_message "Interface is not WWAN or action is not ifup"
+    exit 0
+fi
+
+if [ -f "$WDCTLX" ] && [ -x "$WDCTLX" ]; then
+    log_message "WDCTLX found use it to handle hotplug"
+    "$WDCTLX" hotplugin '{"interface":"'$INTERFACE'","action":"'$ACTION'","device":"'$DEVICE'"}'
+    exit 0
+fi
+
+wwan_device=$DEVICE
+lan_device=$(uci -q get network.lan.device) || {
+    log_message "Failed to get LAN device"
+    exit 1
+}
+log_message "WWAN device: $wwan_device, LAN device: $lan_device"
+
+wwan_proto=$(uci -q get network.wwan.proto | xargs)
+lan_proto=$(uci -q get network.lan.proto | xargs)
+if [ "$wwan_proto" != "dhcp" ]; then
+    log_message "WWAN proto is not DHCP"
+    exit 0
+fi
+if [ "$lan_proto" != "static" ]; then
+    log_message "LAN proto is not static"
+    exit 0
+fi
+
+wwan_ipv4=$(ip -4 addr show "$DEVICE" | grep -oE 'inet [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | awk '{print $2}' | head -1)
+lan_ipv4=$(uci -q get network.lan.ipaddr)
+lan_ipv4_mask=$(uci -q get network.lan.netmask)
+
+log_message "WWAN IP: $wwan_ipv4, LAN IP: $lan_ipv4, LAN Mask: $lan_ipv4_mask"
+
+if [ -z "$wwan_ipv4" ] || [ -z "$lan_ipv4" ] || [ -z "$lan_ipv4_mask" ]; then
+    log_message "Missing IP configuration"
+    exit 1
+fi
+
+wwan_ipv4_network=$(calculate_network_address "$wwan_ipv4" "$lan_ipv4_mask")
+lan_ipv4_network=$(calculate_network_address "$lan_ipv4" "$lan_ipv4_mask")
+
+if [ "$wwan_ipv4_network" != "$lan_ipv4_network" ]; then
+    log_message "No conflict between WWAN and LAN subnets"
+    exit 0
+fi
+
+log_message "Bringing down WWAN interface"
+ifconfig "$DEVICE" down
+
+log_message "WWAN and LAN subnets conflict detected"
+lan_network_array=($(echo "$lan_ipv4" | tr '.' ' '))
+log_message "LAN network array: ${lan_network_array[*]}"
+lan_network_array[2]=$((lan_network_array[2] + 1))
+log_message "LAN network array after increment: ${lan_network_array[*]}"
+if [ "${lan_network_array[2]}" -gt 255 ]; then
+    lan_network_array[2]=0
+    lan_network_array[1]=$((lan_network_array[1] + 1))
+fi
+log_message "LAN network array after carry: ${lan_network_array[*]}"
+new_lan_ipv4_network="${lan_network_array[0]}.${lan_network_array[1]}.${lan_network_array[2]}.${lan_network_array[3]}"
+
+log_message "Changing LAN IP to $new_lan_ipv4_network"
+uci set network.lan.ipaddr="$new_lan_ipv4_network"
+uci commit network
+
+log_message "Restarting network service"
+service network restart
