@@ -1,0 +1,73 @@
+#!/bin/sh
+
+# Constants
+WDCTLX="/usr/bin/wdctlx"
+WAN_INTERFACE="wan"
+LOGGER_TAG="wan-lan-conflict"
+
+# Helper functions
+log_message() {
+    logger -t "$LOGGER_TAG" -p notice "$1"
+}
+
+calculate_network_address() {
+    local ip=$1
+    local mask=$2
+
+    # Convert IP and Mask to integer form
+    local ip_int
+    local mask_int
+    local network_int
+
+    ip_int=$(echo "$ip" | awk -F'.' '{print ($1 * 16777216) + ($2 * 65536) + ($3 * 256) + $4}')
+    mask_int=$(echo "$mask" | awk -F'.' '{print ($1 * 16777216) + ($2 * 65536) + ($3 * 256) + $4}')
+    network_int=$((ip_int & mask_int))
+
+    # Convert back the network address to dotted decimal format
+    echo "$((network_int >> 24 & 255)).$((network_int >> 16 & 255)).$((network_int >> 8 & 255)).$((network_int & 255))"
+}
+
+
+if [ "$INTERFACE" != "$WAN_INTERFACE" ] && [ "$ACTION" != "ifup" ]; then
+    exit 0
+fi
+
+if [ -f "$WDCTLX" ] && [ -x "$WDCTLX" ]; then
+    log_message "WDCTLX found use it to handle hotplug"
+    "$WDCTLX" hotplugin '{"interface":"'$INTERFACE'","action":"'$ACTION'","device":"'$DEVICE'"}'
+    exit 0
+fi
+
+# check if wan interface ip is in the same subnet as the lan interface when wan is dhcp
+wan_device=$(uci -q get network.wan.device)
+lan_device=$(uci -q get network.lan.device)
+if [ -z "$wan_device" ] || [ -z "$lan_device" ]; then
+    log_message "WAN or LAN interface not found"
+    exit 1
+fi
+
+wan_proto=$(uci -q get network.wan.proto)
+lan_proto=$(uci -q get network.lan.proto)
+
+log_message "WAN device: $wan_device, LAN device: $lan_device"
+log_message "WAN proto: $wan_proto, LAN proto: $lan_proto"
+
+if [ "$wan_proto" = "dhcp" ] && [ "$lan_proto" = "static" ]; then
+    wan_ipv4=$(ifconfig $wan_device | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
+    lan_ipv4=$(uci -q get network.lan.ipaddr)
+    lan_ipv4_mask=$(uci -q get network.lan.netmask)
+    wan_ipv4_network=$(calculate_network_address "$wan_ipv4" "$lan_ipv4_mask")
+    lan_ipv4_network=$(calculate_network_address "$lan_ipv4" "$lan_ipv4_mask")
+    if [ "$wan_ipv4_network" = "$lan_ipv4_network" ]; then
+        log_message "WAN interface IP $wan_ipv4 is in the same subnet as LAN interface IP $lan_ipv4"
+        # if wan_ipv4_network is the same as lan_ipv4_network, then change lan interface ip to a different subnet
+        IFS='.' read -r -a lan_network_array <<< "$lan_ipv4"
+        lan_network_array[2]=$((lan_network_array[2] + 1))
+        new_lan_ipv4_network="${lan_network_array[0]}.${lan_network_array[1]}.${lan_network_array[2]}.${lan_network_array[3]}"
+        log_message "Changing LAN interface IP to $new_lan_ipv4_network"
+        uci set network.lan.ipaddr="$new_lan_ipv4_network"
+        uci commit network
+
+        reboot
+    fi
+fi
