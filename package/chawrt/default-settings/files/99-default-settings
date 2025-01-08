@@ -104,7 +104,20 @@ configure_shinit() {
 
 # Configure mesh settings, add mesh network
 configure_mesh() {
+	[ -f /etc/config/wireless ] || return
+
 	uci -q batch <<-EOF
+		add wireless wifi-iface
+		set wireless.@wifi-iface[-1].device='radio0'
+		set wireless.@wifi-iface[-1].network='lan'
+		set wireless.@wifi-iface[-1].mode='mesh'
+		set wireless.@wifi-iface[-1].encryption='sae'
+		set wireless.@wifi-iface[-1].key='apfree-wifidog'
+		set wireless.@wifi-iface[-1].mesh_id='chawrt-aw-mesh'
+		set wireless.@wifi-iface[-1].mesh_fwding='1'
+		set wireless.@wifi-iface[-1].mesh_rssi_threshold='0'
+		set wireless.@wifi-iface[-1].disabled='1'
+		rename wireless.@wifi-iface[-1]='default_radio0'
 		add wireless wifi-iface
 		set wireless.@wifi-iface[-1].device='radio1'
 		set wireless.@wifi-iface[-1].network='lan'
@@ -118,6 +131,30 @@ configure_mesh() {
 		rename wireless.@wifi-iface[-1]='default_radio1'
 		commit wireless
 EOF
+}
+
+# Add wifi ssid 
+add_wifi_ssid() {
+	[ -f /etc/config/wireless ] || return
+
+	uci -q batch <<-EOF
+		add wireless wifi-iface
+		set wireless.@wifi-iface[-1].device='radio0'
+		set wireless.@wifi-iface[-1].network='lan'
+		set wireless.@wifi-iface[-1].mode='ap'
+		set wireless.@wifi-iface[-1].ssid='chawrt-2.4G'
+		set wireless.@wifi-iface[-1].encryption='none'
+		rename wireless.@wifi-iface[-1]='wifnet0'
+		add wireless wifi-iface
+		set wireless.@wifi-iface[-1].device='radio1'
+		set wireless.@wifi-iface[-1].network='lan'
+		set wireless.@wifi-iface[-1].mode='ap'
+		set wireless.@wifi-iface[-1].ssid='chawrt-5G'
+		set wireless.@wifi-iface[-1].encryption='none'
+		rename wireless.@wifi-iface[-1]='wifnet1'
+		commit wireless
+EOF
+	wifi reload
 }
 
 main() {
@@ -150,6 +187,9 @@ main() {
 
 	# Configure mesh settings
 	configure_mesh
+
+	# Add wifi ssid
+	add_wifi_ssid
 }
 
 main
