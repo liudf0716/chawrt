@@ -152,6 +152,8 @@ add_wifi_ssid() {
 		set wireless.@wifi-iface[-1].ssid='chawrt-5G'
 		set wireless.@wifi-iface[-1].encryption='none'
 		rename wireless.@wifi-iface[-1]='wifnet1'
+		set wireless.radio0.disabled='0'
+		set wireless.radio1.disabled='0'
 		commit wireless
 EOF
 	wifi reload
