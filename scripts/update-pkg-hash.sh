@@ -63,12 +63,12 @@ if [ -f "$DOWNLOAD_PATH" ]; then
 fi
 
 # Download the source tarball
-echo "Downloading source tarball..."
-wget -q -O "$DOWNLOAD_PATH" "$DOWNLOAD_URL"
+echo "Downloading source tarball to $DOWNLOAD_PATH ..."
+curl -s -o "$DOWNLOAD_PATH" "$DOWNLOAD_URL"
 
 # Verify that the download was successful
-if [ ! -f "$DOWNLOAD_PATH" ]; then
-    echo "Error: Failed to download the source tarball from '$DOWNLOAD_URL'."
+if [ ! -f "$DOWNLOAD_PATH" ] || [ ! -s "$DOWNLOAD_PATH" ]; then
+    echo "Error: Failed to download the source tarball from '$DOWNLOAD_URL' or file is empty."
     exit 1
 fi
 
