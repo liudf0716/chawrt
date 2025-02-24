@@ -92,6 +92,9 @@ mediatek_setup_interfaces()
 	dlink,aquila-pro-ai-m60-a1)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" internet
 		;;
+	hlktech,hlk-rm65)
+		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4 lan5" eth1
+		;;
 	mediatek,mt7986a-rfb)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4 lan6" "eth1 wan"
 		;;
