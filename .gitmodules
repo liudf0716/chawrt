@@ -1,6 +1,3 @@
-[submodule "package/chawrt/luci-app-argon-config"]
-	path = package/chawrt/luci-app-argon-config
-	url = https://github.com/jerrykuku/luci-app-argon-config.git
 [submodule "package/chawrt/luci-theme-argon"]
 	path = package/chawrt/luci-theme-argon
 	url = https://github.com/jerrykuku/luci-theme-argon.git
