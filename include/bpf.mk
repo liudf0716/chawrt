@@ -36,8 +36,40 @@ else
   LLVM_STRIP:=$(LLVM_PATH)/llvm-strip
 endif
 
-BPF_KARCH:=mips
-BPF_ARCH:=mips$(if $(CONFIG_ARCH_64BIT),64)$(if $(CONFIG_BIG_ENDIAN),,el)
+# Determine the target architecture for BPF compilation
+ifneq ($(findstring i386,$(CONFIG_ARCH)),)
+  BPF_KARCH:=x86
+else ifneq ($(findstring x86_64,$(CONFIG_ARCH)),)
+  BPF_KARCH:=x86
+else ifneq ($(findstring mips64,$(CONFIG_ARCH)),)
+  BPF_KARCH:=mips
+else ifneq ($(findstring mips,$(CONFIG_ARCH)),)
+  BPF_KARCH:=mips
+else ifneq ($(findstring armeb,$(CONFIG_ARCH)),)
+  BPF_KARCH:=arm
+else ifneq ($(findstring aarch64,$(CONFIG_ARCH)),)
+  BPF_KARCH:=arm64
+else ifneq ($(findstring arm,$(CONFIG_ARCH)),)
+  BPF_KARCH:=arm
+else ifneq ($(findstring powerpc64,$(CONFIG_ARCH)),)
+  BPF_KARCH:=powerpc
+else ifneq ($(findstring powerpc,$(CONFIG_ARCH)),)
+  BPF_KARCH:=powerpc
+else ifneq ($(findstring riscv64,$(CONFIG_ARCH)),)
+  BPF_KARCH:=riscv
+else ifneq ($(findstring loongarch64,$(CONFIG_ARCH)),)
+  BPF_KARCH:=loongarch
+else
+  # Default to MIPS as fallback (original behavior)
+  $(info) "WARNING: Unsupported architecture $(CONFIG_ARCH). Defaulting to MIPS."
+  $(info) "Please set CONFIG_BPF_KARCH to the correct architecture."
+  $(info) "This may lead to unexpected behavior."
+  BPF_KARCH:=mips
+endif
+
+# Build architecture-specific target variables
+#BPF_ARCH:=$(BPF_KARCH)$(if $(CONFIG_ARCH_64BIT),64)$(if $(CONFIG_BIG_ENDIAN),,el)
+BPF_ARCH:=$(BPF_KARCH)$(if $(CONFIG_BIG_ENDIAN),,el)
 BPF_TARGET:=bpf$(if $(CONFIG_BIG_ENDIAN),eb,el)
 
 BPF_HEADERS_DIR:=$(STAGING_DIR)/bpf-headers
