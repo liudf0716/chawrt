@@ -38,33 +38,29 @@ endif
 
 # Determine the target architecture for BPF compilation
 ifneq ($(findstring i386,$(CONFIG_ARCH)),)
-  BPF_KARCH:=x86
+	BPF_KARCH:=x86
 else ifneq ($(findstring x86_64,$(CONFIG_ARCH)),)
-  BPF_KARCH:=x86
+	BPF_KARCH:=x86
 else ifneq ($(findstring mips64,$(CONFIG_ARCH)),)
-  BPF_KARCH:=mips
+	BPF_KARCH:=mips
 else ifneq ($(findstring mips,$(CONFIG_ARCH)),)
-  BPF_KARCH:=mips
+	BPF_KARCH:=mips
 else ifneq ($(findstring armeb,$(CONFIG_ARCH)),)
-  BPF_KARCH:=arm
+	BPF_KARCH:=arm
 else ifneq ($(findstring aarch64,$(CONFIG_ARCH)),)
-  BPF_KARCH:=arm64
+	BPF_KARCH:=arm64
 else ifneq ($(findstring arm,$(CONFIG_ARCH)),)
-  BPF_KARCH:=arm
+	BPF_KARCH:=arm
 else ifneq ($(findstring powerpc64,$(CONFIG_ARCH)),)
-  BPF_KARCH:=powerpc
+	BPF_KARCH:=powerpc
 else ifneq ($(findstring powerpc,$(CONFIG_ARCH)),)
-  BPF_KARCH:=powerpc
+	BPF_KARCH:=powerpc
 else ifneq ($(findstring riscv64,$(CONFIG_ARCH)),)
-  BPF_KARCH:=riscv
+	BPF_KARCH:=riscv
 else ifneq ($(findstring loongarch64,$(CONFIG_ARCH)),)
-  BPF_KARCH:=loongarch
+	BPF_KARCH:=loongarch
 else
-  # Default to MIPS as fallback (original behavior)
-  $(info) "WARNING: Unsupported architecture $(CONFIG_ARCH). Defaulting to MIPS."
-  $(info) "Please set CONFIG_BPF_KARCH to the correct architecture."
-  $(info) "This may lead to unexpected behavior."
-  BPF_KARCH:=mips
+	BPF_KARCH:=mips
 endif
 
 # Build architecture-specific target variables
