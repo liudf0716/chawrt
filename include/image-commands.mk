@@ -511,14 +511,14 @@ define Build/gl-qsdk-factory
 	$(CP) $(BOOT_SCRIPT) $(KDIR_TMP)/
 	$(shell mv $(GL_IMGK) $(GL_IMGK).tmp)
 
+	sed -i "s/rootfs_size/`wc -c $(GL_IMGK) | \
+	cut -d " " -f 1 | xargs printf "0x%x"`/g" $(KDIR_TMP)/$(BOOT_SCRIPT);
+
 	$(TOPDIR)/scripts/mkits-qsdk-ipq-image.sh \
 		$(GL_ITS) \
+		$(BOOT_SCRIPT) \
 		$(GL_UBI) \
-		$(GL_IMGK) \
-		$(BOOT_SCRIPT)
-
-	sed -i "s/rootfs_size/`wc -c $(GL_IMGK) | \
-	cut -d " " -f 1 | xargs printf "0x%x"`/g" $(BOOT_SCRIPT);
+		$(GL_IMGK)
 
 	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage -f \
 		$(GL_ITS) \
