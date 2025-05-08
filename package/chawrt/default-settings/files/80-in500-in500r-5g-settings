@@ -1,0 +1,33 @@
+#!/bin/sh
+
+[ -f /etc/config/network ] || exit 0
+
+# Check if device is in500 or in500r
+board=$(board_name)
+[ "$board" = "dhlab,in500" -o "$board" = "dhlab,in500r" ] || exit 0
+
+# Set device name based on board type
+if [ "$board" = "dhlab,in500" ]; then
+	device="eth2"
+elif [ "$board" = "dhlab,in500r" ]; then
+	device="usb0"
+fi
+
+# Add 5gwan interface to network config
+uci -q batch <<-EOF >/dev/null
+	delete network.5gwan
+	set network.5gwan=interface
+	set network.5gwan.device='$device'
+	set network.5gwan.proto='dhcp'
+	set network.5gwan.metric='10'
+	set network.5gwan.ipv6='auto'
+	commit network
+EOF
+
+# Add 5gwan to wan zone in firewall config
+uci -q batch <<-EOF >/dev/null
+	add_list firewall.@zone[1].network='5gwan'
+	commit firewall
+EOF
+
+exit 0 
