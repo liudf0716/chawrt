@@ -33,6 +33,7 @@ endef
 define Package/default-settings/install
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/99-default-settings $(1)/etc/uci-defaults/
+	$(INSTALL_BIN) ./files/80-in500-in500r-5g-settings $(1)/etc/uci-defaults/
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 	$(INSTALL_BIN) ./files/60-hotplugd-iface-wan-wwan-switch $(1)/etc/hotplug.d/iface/
 	$(INSTALL_BIN) ./files/70-hotplugd-iface-wan-lan-conflict $(1)/etc/hotplug.d/iface/
