@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Function to extract a variable's value from the Makefile
+extract_var() {
+    local var_name="$1"
+    local makefile_path="$2"
+    grep -E "^${var_name}([ \t]*:?=)[ \t]*" "$makefile_path" | head -n1 | sed -E "s/^${var_name}([ \t]*:?=)[ \t]*//"
+}
+
 # Exit immediately if a command exits with a non-zero status
 set -e
 
@@ -7,6 +14,7 @@ set -e
 DEFAULT_PACKAGES=(
     "package/feeds/packages/xfrpc/Makefile"
     "package/feeds/packages/apfree-wifidog/Makefile"
+    "package/feeds/packages/kcptun/Makefile"
 )
 
 # Function to display usage information
@@ -29,18 +37,13 @@ update_pkg_hash() {
         return 1
     fi
     
-    # Function to extract a variable's value from the Makefile
-    extract_var() {
-        local var_name="$1"
-        grep -E "^${var_name}[:]?=" "$MAKEFILE_PATH" | head -n1 | cut -d'=' -f2 | tr -d ' ' || echo ""
-    }
 
     # Extract necessary variables from the Makefile
-    PKG_NAME=$(extract_var "PKG_NAME")
-    PKG_VERSION=$(extract_var "PKG_VERSION")
-    PKG_SOURCE_URL=$(extract_var "PKG_SOURCE_URL")
-    PKG_SOURCE=$(extract_var "PKG_SOURCE")
-    PKG_HASH=$(extract_var "PKG_HASH")
+    PKG_NAME=$(extract_var "PKG_NAME" "$MAKEFILE_PATH")
+    PKG_VERSION=$(extract_var "PKG_VERSION" "$MAKEFILE_PATH")
+    PKG_SOURCE_URL=$(extract_var "PKG_SOURCE_URL" "$MAKEFILE_PATH")
+    PKG_SOURCE=$(extract_var "PKG_SOURCE" "$MAKEFILE_PATH")
+    PKG_HASH=$(extract_var "PKG_HASH" "$MAKEFILE_PATH")
 
     # Validate extracted variables
     if [ -z "$PKG_NAME" ] || [ -z "$PKG_VERSION" ] || [ -z "$PKG_SOURCE_URL" ] || [ -z "$PKG_SOURCE" ] || [ -z "$PKG_HASH" ]; then
@@ -50,11 +53,19 @@ update_pkg_hash() {
 
     echo "Package: $PKG_NAME, Version: $PKG_VERSION"
 
-    # Resolve PKG_SOURCE by replacing variables (e.g., $(PKG_NAME), $(PKG_VERSION))
-    PKG_SOURCE_RESOLVED=$(echo "$PKG_SOURCE" | sed "s/\$(PKG_NAME)/$PKG_NAME/g" | sed "s/\$(PKG_VERSION)/$PKG_VERSION/g")
+    # Resolve PKG_SOURCE by replacing variables
+    PKG_SOURCE_RESOLVED=$(echo "$PKG_SOURCE" \
+        | sed "s|\$(PKG_NAME)|$PKG_NAME|g" \
+        | sed "s|\$(PKG_VERSION)|$PKG_VERSION|g" \
+        | sed "s|\${PKG_NAME}|$PKG_NAME|g" \
+        | sed "s|\${PKG_VERSION}|$PKG_VERSION|g")
 
     # Construct the full download URL by replacing variables in PKG_SOURCE_URL
-    DOWNLOAD_URL=$(echo "$PKG_SOURCE_URL" | sed "s/\$(PKG_NAME)/$PKG_NAME/g" | sed "s/\$(PKG_VERSION)/$PKG_VERSION/g")
+    DOWNLOAD_URL=$(echo "$PKG_SOURCE_URL" \
+        | sed "s|\$(PKG_NAME)|$PKG_NAME|g" \
+        | sed "s|\$(PKG_VERSION)|$PKG_VERSION|g" \
+        | sed "s|\${PKG_NAME}|$PKG_NAME|g" \
+        | sed "s|\${PKG_VERSION}|$PKG_VERSION|g")
 
     echo "Constructed Download URL: $DOWNLOAD_URL"
 
