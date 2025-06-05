@@ -38,6 +38,8 @@ define Package/default-settings/install
 	$(INSTALL_BIN) ./files/60-hotplugd-iface-wan-wwan-switch $(1)/etc/hotplug.d/iface/
 	$(INSTALL_BIN) ./files/70-hotplugd-iface-wan-lan-conflict $(1)/etc/hotplug.d/iface/
 	$(INSTALL_BIN) ./files/71-hotplugd-iface-wwan-lan-conflict $(1)/etc/hotplug.d/iface/
+	$(INSTALL_DIR) $(1)/etc/profile.d
+	$(INSTALL_BIN) ./files/10-sysinfo-motd.sh $(1)/etc/profile.d/
 endef
 
 # Build package
