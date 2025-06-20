@@ -45,6 +45,9 @@ mediatek_setup_interfaces()
 	routerich,ax3000-ubootmod)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3" wan
 		;;
+	sunnywifi,s300v20)
+		ucidef_set_interfaces_lan_wan "lan0 lan1 lan2 lan3" eth1
+		;;
 	asus,tuf-ax4200|\
 	jdcloud,re-cp-03|\
 	mediatek,mt7981-rfb|\
@@ -212,6 +215,11 @@ mediatek_setup_macs()
 	xiaomi,redmi-router-ax6000-ubootmod)
 		wan_mac=$(mtd_get_mac_ascii Bdata ethaddr_wan)
 		label_mac=$wan_mac
+		;;
+	sunnywifi,s300v20)
+		label_mac=$(cat /sys/class/net/eth0/address)
+		lan_mac=$label_mac
+		wan_mac=$(macaddr_add "$label_mac" 3)
 		;;
 	yuncore,ax835)
 		label_mac=$(mtd_get_mac_binary "Factory" 0x4)
