@@ -99,8 +99,6 @@ Once the build is complete, the firmware images will be located in the `bin/targ
 *   **Case-sensitive filesystem**: Building on a case-insensitive filesystem (like default macOS or Windows NTFS) will lead to errors.
 *   **Consult the community**: If you encounter issues, search online forums or the ChaWrt community channels for help. Provide detailed logs and information about your setup.
 
-```
-
 
 <a name="chinese-guide"></a>
 ## 在 Ubuntu 24.04 上编译 ChaWrt (中文)
