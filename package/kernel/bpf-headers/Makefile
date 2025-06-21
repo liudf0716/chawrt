@@ -69,18 +69,33 @@ endef
 BPF_DOC = $(PKG_BUILD_DIR)/scripts/bpf_doc.py
 
 define Build/Configure/64
-	echo 'CONFIG_CPU_MIPS64_R2=y' >> $(PKG_BUILD_DIR)/.config
+	# Add 64-bit configuration based on architecture
+	case "$(BPF_KARCH)" in \
+		mips) echo 'CONFIG_CPU_MIPS64_R2=y' >> $(PKG_BUILD_DIR)/.config ;; \
+		arm64|aarch64) echo 'CONFIG_ARM64=y' >> $(PKG_BUILD_DIR)/.config ;; \
+		x86) echo 'CONFIG_X86_64=y' >> $(PKG_BUILD_DIR)/.config ;; \
+		riscv) echo 'CONFIG_RISCV=y' >> $(PKG_BUILD_DIR)/.config ;; \
+		powerpc) echo 'CONFIG_PPC64=y' >> $(PKG_BUILD_DIR)/.config ;; \
+	esac
 	echo 'CONFIG_64BIT=y' >> $(PKG_BUILD_DIR)/.config
 endef
 
 define Build/Configure
-	grep -vE 'CONFIG_(CPU_.*ENDIAN|HZ)' $(PKG_BUILD_DIR)/arch/mips/configs/generic_defconfig > $(PKG_BUILD_DIR)/.config
+	# Use architecture-specific defconfig based on BPF_KARCH
+	if [ -f "$(PKG_BUILD_DIR)/arch/$(BPF_KARCH)/configs/defconfig" ]; then \
+		grep -vE 'CONFIG_(CPU_.*ENDIAN|HZ)' $(PKG_BUILD_DIR)/arch/$(BPF_KARCH)/configs/defconfig > $(PKG_BUILD_DIR)/.config; \
+	elif [ -f "$(PKG_BUILD_DIR)/arch/$(BPF_KARCH)/defconfig" ]; then \
+		grep -vE 'CONFIG_(CPU_.*ENDIAN|HZ)' $(PKG_BUILD_DIR)/arch/$(BPF_KARCH)/defconfig > $(PKG_BUILD_DIR)/.config; \
+	elif [ -f "$(PKG_BUILD_DIR)/arch/$(BPF_KARCH)/configs/generic_defconfig" ]; then \
+		grep -vE 'CONFIG_(CPU_.*ENDIAN|HZ)' $(PKG_BUILD_DIR)/arch/$(BPF_KARCH)/configs/generic_defconfig > $(PKG_BUILD_DIR)/.config; \
+	else \
+		echo '# Minimal config for BPF headers' > $(PKG_BUILD_DIR)/.config; \
+	fi
 	echo 'CONFIG_CPU_$(if $(CONFIG_BIG_ENDIAN),BIG,LITTLE)_ENDIAN=y' >> $(PKG_BUILD_DIR)/.config
 	$(if $(CONFIG_ARCH_64BIT),$(Build/Configure/64))
 	grep CONFIG_HZ $(REAL_LINUX_DIR)/.config >> $(PKG_BUILD_DIR)/.config
 	yes '' | $(KERNEL_MAKE) oldconfig
-	grep 'CONFIG_HZ=' $(REAL_LINUX_DIR)/.config | \
-		cut -d= -f2 | \
+	( grep 'CONFIG_HZ=' $(REAL_LINUX_DIR)/.config | cut -d= -f2; echo "quit" ) | \
 		bc -q $(LINUX_DIR)/kernel/time/timeconst.bc \
 		> $(LINUX_DIR)/include/generated/timeconst.h
 	$(BPF_DOC) --header \
