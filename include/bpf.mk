@@ -36,8 +36,53 @@ else
   LLVM_STRIP:=$(LLVM_PATH)/llvm-strip
 endif
 
-BPF_KARCH:=mips
-BPF_ARCH:=mips$(if $(CONFIG_ARCH_64BIT),64)$(if $(CONFIG_BIG_ENDIAN),,el)
+ifneq (,$(findstring uml,$(BOARD)))
+  BPF_KARCH=um
+else ifneq (,$(findstring $(ARCH) , aarch64 aarch64_be ))
+  BPF_KARCH := arm64
+else ifneq (,$(findstring $(ARCH) , arceb ))
+  BPF_KARCH := arc
+else ifneq (,$(findstring $(ARCH) , armeb ))
+  BPF_KARCH := arm
+else ifneq (,$(findstring $(ARCH) , loongarch64 ))
+  BPF_KARCH := loongarch
+else ifneq (,$(findstring $(ARCH) , mipsel mips64 mips64el ))
+  BPF_KARCH := mips
+else ifneq (,$(findstring $(ARCH) , powerpc64 ))
+  BPF_KARCH := powerpc
+else ifneq (,$(findstring $(ARCH) , riscv64 ))
+  BPF_KARCH := riscv
+else ifneq (,$(findstring $(ARCH) , sh2 sh3 sh4 ))
+  BPF_KARCH := sh
+else ifneq (,$(findstring $(ARCH) , i386 x86_64 ))
+  BPF_KARCH := x86
+else
+  BPF_KARCH := $(ARCH)
+endif
+
+ifneq (,$(findstring uml,$(BOARD)))
+  BPF_ARCH := um
+else ifneq (,$(findstring $(ARCH) , aarch64 aarch64_be ))
+  BPF_ARCH := aarch64$(if $(CONFIG_BIG_ENDIAN),_be)
+else ifneq (,$(findstring $(ARCH) , arceb ))
+  BPF_ARCH := arceb
+else ifneq (,$(findstring $(ARCH) , arm armeb ))
+  BPF_ARCH := arm$(if $(CONFIG_BIG_ENDIAN),eb)
+else ifneq (,$(findstring $(ARCH) , loongarch64 ))
+  BPF_ARCH := loongarch64
+else ifneq (,$(findstring $(ARCH) , mips mipsel mips64 mips64el ))
+  BPF_ARCH := mips$(if $(CONFIG_ARCH_64BIT),64)$(if $(CONFIG_BIG_ENDIAN),,el)
+else ifneq (,$(findstring $(ARCH) , powerpc64 ))
+  BPF_ARCH := powerpc64$(if $(CONFIG_BIG_ENDIAN),,le)
+else ifneq (,$(findstring $(ARCH) , riscv64 ))
+  BPF_ARCH := riscv64
+else ifneq (,$(findstring $(ARCH) , sh2 sh3 sh4 ))
+  BPF_ARCH := sh$(if $(CONFIG_ARCH_64BIT),64)$(if $(CONFIG_BIG_ENDIAN),,el)
+else ifneq (,$(findstring $(ARCH) , i386 x86_64 ))
+  BPF_ARCH := $(ARCH)
+else
+  BPF_ARCH := $(ARCH)
+endif
 BPF_TARGET:=bpf$(if $(CONFIG_BIG_ENDIAN),eb,el)
 
 BPF_HEADERS_DIR:=$(STAGING_DIR)/bpf-headers
