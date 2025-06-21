@@ -42,7 +42,7 @@ Open a terminal and run the following commands to update your system and install
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib gettext git libncurses5-dev libssl-dev python3-distutils rsync unzip zlib1g-dev file wget
+sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib gettext git libncurses-dev libssl-dev rsync unzip zlib1g-dev file wget
 ```
 
 ### 3. Clone ChaWrt Repository
@@ -50,10 +50,10 @@ sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib gette
 If you haven't already, clone the ChaWrt repository:
 
 ```bash
-git clone https://github.com/your_username/chawrt.git chawrt
+git clone https://github.com/liudf0716/chawrt.git chawrt
 cd chawrt
 ```
-*(Note: Replace `https://github.com/your_username/chawrt.git` with the actual URL of the ChaWrt Git repository if it's different, e.g., your own fork.)*
+*(Note: Replace `https://github.com/liudf0716/chawrt.git` with the actual URL of the ChaWrt Git repository if it's different, e.g., your own fork.)*
 
 ### 4. Update and Install Feeds
 
@@ -120,7 +120,7 @@ Once the build is complete, the firmware images will be located in the `bin/targ
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib gettext git libncurses5-dev libssl-dev python3-distutils rsync unzip zlib1g-dev file wget
+sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib gettext git libncurses-dev libssl-dev rsync unzip zlib1g-dev file wget
 ```
 
 ### 3. 克隆 ChaWrt 仓库
@@ -128,10 +128,10 @@ sudo apt install -y build-essential clang flex bison g++ gawk gcc-multilib gette
 如果您尚未克隆 ChaWrt 仓库，请执行以下操作：
 
 ```bash
-git clone https://github.com/your_username/chawrt.git chawrt
+git clone https://github.com/liudf0716/chawrt.git chawrt
 cd chawrt
 ```
-*(注意: 请将 `https://github.com/your_username/chawrt.git` 替换为实际的 ChaWrt Git 仓库 URL，例如您自己的 fork。)*
+*(注意: 请将 `https://github.com/liudf0716/chawrt.git` 替换为实际的 ChaWrt Git 仓库 URL，例如您自己的 fork。)*
 
 ### 4. 更新并安装 Feeds
 
