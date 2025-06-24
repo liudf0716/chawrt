@@ -104,12 +104,8 @@ mediatek_setup_interfaces()
 	dlink,aquila-pro-ai-m60-a1)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" internet
 		;;
-	hlktech,hlk-rm65)
-		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4 lan5" eth1
-		;;
-	dhlab,in500)
-		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4 lan5" eth1
-		;;
+	hlktech,hlk-rm65|\
+	dhlab,in500|\
 	dhlab,in500r)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4 lan5" eth1
 		;;
@@ -175,6 +171,10 @@ mediatek_setup_macs()
 	bananapi,bpi-r3-mini|\
 	bananapi,bpi-r4)
 		wan_mac=$(macaddr_add $(cat /sys/class/net/eth0/address) 1)
+		;;
+	dhlab,in500|\
+	dhlab,in500r)
+		lan_mac=$(mtd_get_mac_binary "Factory" 0x4)
 		;;
 	h3c,magic-nx30-pro)
 		wan_mac=$(mtd_get_mac_ascii pdt_data_1 ethaddr)
