@@ -198,21 +198,6 @@
 			label = "lan2";
 		};
 
-		port@2 {
-			reg = <2>;
-			label = "lan3";
-		};
-
-        port@3 {
-            reg = <3>;
-            label = "lan4";
-        };
-
-        port@4 {
-            reg = <4>;
-            label = "lan5";
-        };
-
 		port@6 {
 			reg = <6>;
 			label = "cpu";
