@@ -36,6 +36,8 @@ function handle_link(dev, data, up)
 		     (data.type == "vif" && config.mode == "ap");
 
 	let dev_data = {
+		external: 2,
+		check_vlan: false,
 		isolate: !!config.bridge_isolate,
 		wireless: true,
 		wireless_ap: ap,
@@ -530,7 +532,7 @@ function hotplug(name, add)
 		    data.type != "vif" && data.type != "vlan")
 			continue;
 
-		handle_link(dev, data, up);
+		handle_link(dev, data, add);
 	}
 }
 
