@@ -1,0 +1,249 @@
+/* 登录框居中样式 - 无footer版本 */
+.login-page .login-container {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 2 !important;
+    width: 480px !important;
+    max-width: 90vw !important;
+    box-shadow: rgba(0, 0, 0, 0.75) 0px 0px 35px -5px !important;
+    background: transparent !important;
+    margin: 0 !important;
+    height: auto !important; /* 使用auto高度，因为不需要footer */
+    min-height: auto !important;
+}
+
+/* 完全隐藏footer */
+.login-page .login-container footer {
+    display: none !important;
+}
+
+.login-page .login-container .login-form {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    position: relative !important; /* 改为relative，因为不需要绝对定位 */
+    width: 100% !important;
+    max-width: 480px !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    backdrop-filter: blur(15px) !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    box-sizing: border-box !important;
+}
+
+/* 改进品牌标识区域 */
+.login-page .login-container .login-form .brand {
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 auto 2rem auto !important;
+    color: #525461 !important;
+    justify-content: center !important;
+    padding: 1rem !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    backdrop-filter: blur(10px) !important;
+    text-decoration: none !important;
+}
+
+.login-page .login-container .login-form .brand:hover {
+    text-decoration: none !important;
+}
+
+.login-page .login-container .login-form .brand .icon {
+    width: 50px !important;
+    height: auto !important;
+    margin-right: 25px !important;
+}
+
+.login-page .login-container .login-form .brand .brand-text {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    font-family: "TypoGraphica" !important;
+    word-break: break-word !important;
+}
+
+/* 改进表单区域 */
+.login-page .login-container .login-form .form-login {
+    width: 100% !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* 改进错误提示样式 */
+.login-page .login-container .login-form .form-login .errorbox {
+    background-color: rgba(245, 54, 92, 0.1) !important;
+    border: 1px solid rgba(245, 54, 92, 0.3) !important;
+    border-radius: 6px !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 1.5rem !important;
+    color: #d63384 !important;
+    text-align: center !important;
+}
+
+/* 改进输入框容器 */
+.login-page .login-container .login-form .form-login .input-container {
+    margin-bottom: 1.5rem !important;
+}
+
+/* 改进输入框样式 */
+.login-page .login-container .login-form .form-login .input-group {
+    margin-bottom: 1.25rem !important;
+    position: relative !important;
+}
+
+.login-page .login-container .login-form .form-login .input-group::before {
+    font-family: 'argon' !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+    line-height: 1 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    color: #525461 !important;
+    font-size: 1.5rem !important;
+    position: absolute !important;
+    z-index: 100 !important;
+    left: 10px !important;
+    top: 10px !important;
+}
+
+.login-page .login-container .login-form .form-login .user-icon::before {
+    content: "\e971" !important;
+}
+
+.login-page .login-container .login-form .form-login .pass-icon::before {
+    content: "\e910" !important;
+}
+
+.login-page .login-container .login-form .form-login .input-group .border {
+    position: absolute !important;
+    width: 100% !important;
+    height: 1px !important;
+    bottom: 0 !important;
+    border-bottom: 1px var(--primary) solid !important;
+    transform: scaleX(0) !important;
+    transition: transform 0.3s !important;
+}
+
+.login-page .login-container .login-form .form-login .input-group input {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(94, 114, 228, 0.3) !important;
+    border-radius: 6px !important;
+    padding: 0.75rem 1rem 0.75rem 3rem !important;
+    transition: all 0.3s ease !important;
+    font-size: 1rem !important;
+    line-height: 1.5em !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0.825rem 0 !important;
+    box-sizing: border-box !important;
+    color: #525461 !important;
+    outline: none !important;
+}
+
+.login-page .login-container .login-form .form-login .input-group input:focus {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.1) !important;
+}
+
+.login-page .login-container .login-form .form-login .input-group input:focus + .border {
+    transform: scaleX(1) !important;
+}
+
+/* 改进按钮样式 */
+.login-page .login-container .login-form .cbi-button-apply {
+    width: 100% !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0.875rem 2rem !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    color: #fff !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    min-height: 50px !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(94, 114, 228, 0.3) !important;
+    margin: 1.5rem 0 0 0 !important; /* 移除底部margin */
+    outline: none !important;
+}
+
+.login-page .login-container .login-form .cbi-button-apply:hover,
+.login-page .login-container .login-form .cbi-button-apply:focus {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(94, 114, 228, 0.4) !important;
+    opacity: 0.9 !important;
+}
+
+/* 移动端优化 */
+@media screen and (max-width: 768px) {
+    .login-page .login-container {
+        width: 95vw !important;
+        max-width: 400px !important;
+    }
+    
+    .login-page .login-container .login-form {
+        max-width: 400px !important;
+        padding: 1.5rem !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .login-page .login-container {
+        width: 100vw !important;
+        max-width: none !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        border-radius: 0 !important;
+    }
+    
+    .login-page .login-container .login-form {
+        max-width: none !important;
+        border-radius: 0 !important;
+        padding: 2rem 1.5rem !important;
+    }
+    
+    .login-page .login-container .login-form .form-login .input-group input {
+        padding: 0.75rem 1rem 0.75rem 2.5rem !important;
+    }
+    
+    .login-page .login-container .login-form .form-login .input-group::before {
+        left: 8px !important;
+        font-size: 1.2rem !important;
+    }
+}
+
+/* 增加淡入动画效果 */
+.login-page .login-container {
+    animation: fadeInScale 0.6s ease-out !important;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* 确保在所有情况下footer都不显示 */
+.login-page footer,
+.login-page .login-container footer,
+.login-page .login-form footer {
+    display: none !important;
+    visibility: hidden !important;
+}
