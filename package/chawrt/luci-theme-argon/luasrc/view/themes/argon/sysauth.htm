@@ -134,7 +134,8 @@
 			</a>
 			<!-- Logo End -->
 			<!-- Login Form Start -->
-			<form class="form-login" method="post" action="<%=pcdata(luci.http.getenv("REQUEST_URI"))%>" id="login-form">
+			<form class="form-login" method="post" action="/cgi-bin/luci/" id="login-form">
+				<input type="hidden" name="token" value="<%=token%>" />
 
 				<%- if error_type == "rate_limited" or login_locked then %>
 				<div class="lockout-message" id="lockout-message">
@@ -146,13 +147,13 @@
 				</div>
 				<%- elseif fuser then %>
 				<div class="errorbox">
-					<%:Invalid username and/or password! Please try again.%>
-					<%- if failed_attempts and failed_attempts > 0 then %>
+					<%:Authentication failed. Please check your credentials.%>
+					<%- if failed_attempts and failed_attempts > 2 then %>
 					<div class="attempts-warning">
-						<%:Failed attempts:%> <%=failed_attempts%>/5
+						<%:Multiple failed attempts detected.%>
 						<%- if will_lock_next then %>
 						<div class="warning-next-lock">
-							<%:Warning: Next failed attempt will lock your account for 2 minutes!%>
+							<%:Account will be temporarily locked after next failed attempt.%>
 						</div>
 						<%- end %>
 					</div>
@@ -162,11 +163,11 @@
 
 				<div class="input-container">
 					<div class="input-group user-icon">
-						<input class="cbi-input-user" id="cbi-input-user" type="text" name="luci_username" value="<%=duser%>" <%- if login_locked then %>disabled<%- end %> />
+						<input class="cbi-input-user" id="cbi-input-user" type="text" name="luci_username" value="<%=pcdata(duser or '')%>" maxlength="64" pattern="[a-zA-Z0-9_.-]+" autocomplete="username" <%- if login_locked then %>disabled<%- end %> />
 						<label class="border" for="cbi-input-user"></label>
 					</div>
 					<div class="input-group pass-icon">
-						<input class="cbi-input-password" id="cbi-input-password" type="password" name="luci_password" <%- if login_locked then %>disabled<%- end %> />
+						<input class="cbi-input-password" id="cbi-input-password" type="password" name="luci_password" maxlength="128" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="current-password" <%- if login_locked then %>disabled<%- end %> />
 						<label class="border" for="cbi-input-password"></label>
 					</div>
 				</div>
@@ -337,6 +338,21 @@
 							return false;
 							<%- end %>
 							
+							// 验证输入
+							var username = usernameInput?.value?.trim();
+							var password = passwordInput?.value;
+							
+							if (!username || !password) {
+								e.preventDefault();
+								return false;
+							}
+							
+							// 基本输入验证
+							if (username.length > 64 || password.length > 128) {
+								e.preventDefault();
+								return false;
+							}
+							
 							if (!loginButton.disabled) {
 								loginButton.value = '<%:Logging in...%>';
 								loginButton.disabled = true;
@@ -347,7 +363,7 @@
 
 					// 自动聚焦
 					<%- if not login_locked then %>
-					if (usernameInput && usernameInput.value.trim()) {
+					if (usernameInput && usernameInput.value && usernameInput.value.length > 0) {
 						if (passwordInput) passwordInput.focus();
 					} else {
 						if (usernameInput) usernameInput.focus();
