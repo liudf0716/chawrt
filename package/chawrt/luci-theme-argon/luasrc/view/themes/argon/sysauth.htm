@@ -134,30 +134,225 @@
 			</a>
 			<!-- Logo End -->
 			<!-- Login Form Start -->
-			<form class="form-login" method="post" action="<%=pcdata(luci.http.getenv("REQUEST_URI"))%>">
+			<form class="form-login" method="post" action="<%=pcdata(luci.http.getenv("REQUEST_URI"))%>" id="login-form">
 
-				<%- if fuser then %>
-				<div class="errorbox"><%:Invalid username and/or password! Please try again.%></div>
+				<%- if error_type == "rate_limited" or login_locked then %>
+				<div class="lockout-message" id="lockout-message">
+					<span class="lockout-icon">🔒</span>
+					<div class="lockout-text">
+						<strong><%:Account temporarily locked%></strong>
+						<p><%:Too many failed login attempts. Please wait%> <span id="countdown"><%=lockout_remaining or 0%></span> <%:seconds before trying again.%></p>
+					</div>
+				</div>
+				<%- elseif fuser then %>
+				<div class="errorbox">
+					<%:Invalid username and/or password! Please try again.%>
+					<%- if failed_attempts and failed_attempts > 0 then %>
+					<div class="attempts-warning">
+						<%:Failed attempts:%> <%=failed_attempts%>/5
+						<%- if will_lock_next then %>
+						<div class="warning-next-lock">
+							<%:Warning: Next failed attempt will lock your account for 2 minutes!%>
+						</div>
+						<%- end %>
+					</div>
+					<%- end %>
+				</div>
 				<% end -%>
 
 				<div class="input-container">
 					<div class="input-group user-icon">
-						<input class="cbi-input-user" id="cbi-input-user" type="text" name="luci_username" value="<%=duser%>" />
+						<input class="cbi-input-user" id="cbi-input-user" type="text" name="luci_username" value="<%=duser%>" <%- if login_locked then %>disabled<%- end %> />
 						<label class="border" for="cbi-input-user"></label>
 					</div>
 					<div class="input-group pass-icon">
-						<input class="cbi-input-password" id="cbi-input-password" type="password" name="luci_password" />
+						<input class="cbi-input-password" id="cbi-input-password" type="password" name="luci_password" <%- if login_locked then %>disabled<%- end %> />
 						<label class="border" for="cbi-input-password"></label>
 					</div>
 				</div>
 				<div>
-					<input type="submit" value="<%:Log in%>" class="cbi-button cbi-button-apply" />
+					<input type="submit" value="<%:Log in%>" class="cbi-button cbi-button-apply" id="login-btn" <%- if login_locked then %>disabled<%- end %> />
 				</div>
 			</form>
 			<!-- Login Form End -->
+			<style>
+				.lockout-message {
+					background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
+					color: white;
+					padding: 20px;
+					border-radius: 12px;
+					margin-bottom: 24px;
+					display: flex;
+					align-items: flex-start;
+					gap: 16px;
+					font-weight: 500;
+					animation: pulse 2s infinite;
+					box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
+				}
+
+				.lockout-icon {
+					font-size: 24px;
+					margin-top: 2px;
+				}
+
+				.lockout-text strong {
+					display: block;
+					font-size: 16px;
+					margin-bottom: 8px;
+				}
+
+				.lockout-text p {
+					margin: 0;
+					font-size: 14px;
+					line-height: 1.4;
+				}
+
+				#countdown {
+					font-weight: 700;
+					font-size: 16px;
+					color: #fff3cd;
+					text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+				}
+
+				.attempts-warning {
+					margin-top: 8px;
+					font-size: 13px;
+					opacity: 0.9;
+					font-weight: 500;
+				}
+
+				.warning-next-lock {
+					margin-top: 4px;
+					font-size: 12px;
+					color: #ff6b6b;
+					font-weight: 600;
+					animation: blink 1.5s infinite;
+				}
+
+				.errorbox {
+					animation: shake 0.5s ease-in-out;
+				}
+
+				@keyframes pulse {
+					0%, 100% { opacity: 1; }
+					50% { opacity: 0.9; }
+				}
+
+				@keyframes shake {
+					0%, 100% { transform: translateX(0); }
+					25% { transform: translateX(-5px); }
+					75% { transform: translateX(5px); }
+				}
+
+				@keyframes blink {
+					0%, 50% { opacity: 1; }
+					51%, 100% { opacity: 0.7; }
+				}
+
+				.cbi-input-user:disabled,
+				.cbi-input-password:disabled,
+				.cbi-button:disabled {
+					opacity: 0.5;
+					cursor: not-allowed;
+					background: rgba(255,255,255,0.3) !important;
+					color: rgba(255,255,255,0.6) !important;
+				}
+
+				.unlock-message {
+					background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+					color: white;
+					padding: 16px 20px;
+					border-radius: 12px;
+					margin-bottom: 24px;
+					display: flex;
+					align-items: center;
+					gap: 12px;
+					font-weight: 500;
+					animation: slideIn 0.5s ease-out;
+				}
+
+				@keyframes slideIn {
+					from { transform: translateY(-20px); opacity: 0; }
+					to { transform: translateY(0); opacity: 1; }
+				}
+			</style>
+
 			<script type="text/javascript">//<![CDATA[
-				var input = document.getElementsByName('luci_password')[0];
-				if (input)
-					input.focus();
+				document.addEventListener('DOMContentLoaded', function() {
+					var passwordInput = document.getElementById('cbi-input-password');
+					var usernameInput = document.getElementById('cbi-input-user');
+					var loginForm = document.getElementById('login-form');
+					var loginButton = document.getElementById('login-btn');
+					var countdownElement = document.getElementById('countdown');
+					var lockoutMessage = document.getElementById('lockout-message');
+
+					// 倒计时功能
+					<%- if error_type == "rate_limited" or login_locked then %>
+					var remainingTime = <%=lockout_remaining or 0%>;
+					
+					function updateCountdown() {
+						if (remainingTime > 0) {
+							if (countdownElement) {
+								countdownElement.textContent = remainingTime;
+							}
+							remainingTime--;
+							setTimeout(updateCountdown, 1000);
+						} else {
+							// 倒计时结束，启用表单
+							if (lockoutMessage) {
+								lockoutMessage.style.display = 'none';
+							}
+							
+							// 启用所有输入
+							[usernameInput, passwordInput, loginButton].forEach(function(element) {
+								if (element) {
+									element.disabled = false;
+								}
+							});
+							
+							// 显示解锁消息
+							var unlockMessage = document.createElement('div');
+							unlockMessage.className = 'unlock-message';
+							unlockMessage.innerHTML = '<span style="margin-right: 8px;">✅</span><%:Account unlocked. You can now try to log in again.%>';
+							
+							if (lockoutMessage && lockoutMessage.parentNode) {
+								lockoutMessage.parentNode.insertBefore(unlockMessage, lockoutMessage);
+							}
+							
+							// 3秒后自动刷新页面
+							setTimeout(function() {
+								window.location.reload();
+							}, 3000);
+						}
+					}
+					
+					updateCountdown();
+					<%- end %>
+
+					// 表单提交处理
+					if (loginForm && loginButton) {
+						loginForm.addEventListener('submit', function(e) {
+							<%- if login_locked then %>
+							e.preventDefault();
+							return false;
+							<%- end %>
+							
+							if (!loginButton.disabled) {
+								loginButton.value = '<%:Logging in...%>';
+								loginButton.disabled = true;
+								loginButton.style.opacity = '0.7';
+							}
+						});
+					}
+
+					// 自动聚焦
+					<%- if not login_locked then %>
+					if (usernameInput && usernameInput.value.trim()) {
+						if (passwordInput) passwordInput.focus();
+					} else {
+						if (usernameInput) usernameInput.focus();
+					}
+					<%- end %>
+				});
 			//]]></script>
 <%+themes/argon/footer_login%>
