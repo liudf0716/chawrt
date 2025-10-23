@@ -63,5 +63,8 @@ proto_xfrm_init_config() {
 
 
 [ -n "$INCLUDE_ONLY" ] || {
-	[ -d /sys/module/xfrm_interface ] && add_protocol xfrm
+	if [ -d /sys/module/xfrm_interface ] || zcat /proc/config.gz 2>/dev/null | grep -q CONFIG_XFRM_INTERFACE=y; then
+    	add_protocol xfrm
+	fi
+	
 }
