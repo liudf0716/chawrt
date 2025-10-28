@@ -33,6 +33,15 @@ define Device/friendlyarm_nanopc-t4
 endef
 TARGET_DEVICES += friendlyarm_nanopc-t4
 
+define Device/forlinx_ok3588
+  DEVICE_VENDOR := Forlinx
+  DEVICE_MODEL := OK3588
+  SOC := rk3588
+  DEVICE_DTS := rockchip/rk3588-forlinx-ok3588
+  DEVICE_PACKAGES := kmod-r8169
+endef
+TARGET_DEVICES += forlinx_ok3588
+
 define Device/friendlyarm_nanopc-t6
   DEVICE_VENDOR := FriendlyARM
   DEVICE_MODEL := NanoPC T6
