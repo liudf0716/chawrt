@@ -1,0 +1,119 @@
+--- a/system-linux.c
++++ b/system-linux.c
+@@ -63,6 +63,23 @@
+ #define IFA_FLAGS (IFA_MULTICAST + 1)
+ #endif
+ 
++/* Bridge ioctl commands */
++#ifndef BRCTL_SET_BRIDGE_STP_STATE
++#define BRCTL_SET_BRIDGE_STP_STATE 1
++#endif
++#ifndef BRCTL_SET_BRIDGE_FORWARD_DELAY
++#define BRCTL_SET_BRIDGE_FORWARD_DELAY 3
++#endif
++#ifndef BRCTL_SET_BRIDGE_HELLO_TIME
++#define BRCTL_SET_BRIDGE_HELLO_TIME 4
++#endif
++#ifndef BRCTL_SET_BRIDGE_MAX_AGE
++#define BRCTL_SET_BRIDGE_MAX_AGE 5
++#endif
++#ifndef BRCTL_SET_AGEING_TIME
++#define BRCTL_SET_AGEING_TIME 6
++#endif
++
+ #include <string.h>
+ #include <fcntl.h>
+ #include <glob.h>
+@@ -1490,6 +1507,72 @@
+ 	return (unsigned long) val * 100;
+ }
+ 
++/* Fallback to ioctl for old kernels where netlink bridge creation fails */
++static int system_bridge_addbr_ioctl(const char *name)
++{
++	int sock_fd;
++	int ret;
++
++	sock_fd = socket(AF_INET, SOCK_STREAM, 0);
++	if (sock_fd < 0)
++		return -1;
++
++	ret = ioctl(sock_fd, SIOCBRADDBR, name);
++	close(sock_fd);
++	
++	if (ret < 0)
++		return -errno;
++	
++	return 0;
++}
++
++static int system_bridge_set_params_ioctl(const char *name, struct bridge_config *cfg)
++{
++	int sock_fd;
++	struct ifreq ifr;
++	unsigned long args[4];
++
++	sock_fd = socket(AF_INET, SOCK_STREAM, 0);
++	if (sock_fd < 0)
++		return -1;
++
++	memset(&ifr, 0, sizeof(ifr));
++	strncpy(ifr.ifr_name, name, IFNAMSIZ - 1);
++	ifr.ifr_data = (char *)args;
++
++	/* Set STP state */
++	args[0] = BRCTL_SET_BRIDGE_STP_STATE;
++	args[1] = cfg->stp;
++	args[2] = 0;
++	args[3] = 0;
++	ioctl(sock_fd, SIOCDEVPRIVATE, &ifr);
++
++	/* Set forward delay */
++	args[0] = BRCTL_SET_BRIDGE_FORWARD_DELAY;
++	args[1] = sec_to_jiffies(cfg->forward_delay);
++	ioctl(sock_fd, SIOCDEVPRIVATE, &ifr);
++
++	/* Set hello time */
++	args[0] = BRCTL_SET_BRIDGE_HELLO_TIME;
++	args[1] = sec_to_jiffies(cfg->hello_time);
++	ioctl(sock_fd, SIOCDEVPRIVATE, &ifr);
++
++	/* Set max age */
++	args[0] = BRCTL_SET_BRIDGE_MAX_AGE;
++	args[1] = sec_to_jiffies(cfg->max_age);
++	ioctl(sock_fd, SIOCDEVPRIVATE, &ifr);
++
++	/* Set ageing time */
++	if (cfg->flags & BRIDGE_OPT_AGEING_TIME) {
++		args[0] = BRCTL_SET_AGEING_TIME;
++		args[1] = sec_to_jiffies(cfg->ageing_time);
++		ioctl(sock_fd, SIOCDEVPRIVATE, &ifr);
++	}
++
++	close(sock_fd);
++	return 0;
++}
++
+ int system_bridge_addbr(struct device *bridge, struct bridge_config *cfg)
+ {
+ 	struct nlattr *linkinfo, *data;
+@@ -1563,8 +1646,18 @@
+ 	nla_nest_end(msg, linkinfo);
+ 
+ 	rv = system_rtnl_call(msg);
+-	if (rv)
++	if (rv) {
+ 		D(SYSTEM, "Error adding bridge '%s': %d", bridge->ifname, rv);
++		
++		/* Fallback to ioctl for old kernels (error -10 typically means 
++		 * the kernel doesn't support netlink bridge creation properly) */
++		if (rv == -10) {
++			D(SYSTEM, "Falling back to ioctl method for bridge '%s'", bridge->ifname);
++			rv = system_bridge_addbr_ioctl(bridge->ifname);
++			if (rv == 0)
++				system_bridge_set_params_ioctl(bridge->ifname, cfg);
++		}
++	}
+ 
+ 	return rv;
+ 
