@@ -59,8 +59,8 @@ endef
 
 define Trusted-Firmware-A/rk3588
   BUILD_SUBTARGET:=armv8
-  ATF:=rk35/rk3588_bl31_v1.45.elf
-  TPL:=rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz_v1.16.bin
+  ATF:=rk35/rk3588_bl31_v1.51.elf
+  TPL:=rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz_v1.19.bin
 endef
 
 TFA_TARGETS:= \
@@ -100,6 +100,16 @@ ifeq ($(BUILD_VARIANT),rk3568-e25)
 	$(call Build/Prepare/Default)
 
 	$(CP) $(DL_DIR)/$(TPL_FILE) $(PKG_BUILD_DIR)/bin/rk35/
+  endef
+endif
+
+ifeq ($(BUILD_VARIANT),rk3588)
+  define Build/Prepare
+	$(call Build/Prepare/Default)
+	
+	# Copy RK3588 firmware files from dl directory
+	$(CP) $(DL_DIR)/rk3588_bl31_v1.51.elf $(PKG_BUILD_DIR)/bin/rk35/
+	$(CP) $(DL_DIR)/rk3588_ddr_lp4_2112MHz_lp5_2400MHz_v1.19.bin $(PKG_BUILD_DIR)/bin/rk35/
   endef
 endif
 

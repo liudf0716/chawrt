@@ -39,6 +39,10 @@ define Device/forlinx_ok3588
   SOC := rk3588
   DEVICE_DTS := rockchip/rk3588-forlinx-ok3588
   DEVICE_PACKAGES := kmod-r8169
+  RK_PARTITION_LAYOUT := 1
+  IMAGES := sysupgrade.img.gz update.img
+  IMAGE/sysupgrade.img.gz = boot-ok3588 | boot-script $$(BOOT_SCRIPT) | pine64-img | gzip | append-metadata
+  IMAGE/update.img = boot-ok3588 | rk-partition-img
 endef
 TARGET_DEVICES += forlinx_ok3588
 
