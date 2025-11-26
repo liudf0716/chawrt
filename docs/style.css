@@ -1519,3 +1519,112 @@ tr:hover {
     margin-bottom: 16px;
     font-size: 0.95rem;
 }
+
+/* Wiki 教程链接样式 */
+.wiki-notice {
+    margin-top: 48px;
+    padding: 32px;
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(63, 185, 80, 0.1));
+    border: 2px solid var(--accent-primary);
+    border-radius: 12px;
+}
+
+.wiki-notice h2 {
+    color: var(--accent-primary);
+    margin-bottom: 16px;
+}
+
+.wiki-notice > p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-size: 1.05rem;
+}
+
+.wiki-link {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition);
+    margin-bottom: 24px;
+}
+
+.wiki-link:hover {
+    border-color: var(--accent-primary);
+    background-color: var(--bg-hover);
+    transform: translateX(4px);
+    box-shadow: var(--shadow);
+}
+
+.wiki-icon {
+    font-size: 3rem;
+    flex-shrink: 0;
+}
+
+.wiki-info {
+    flex: 1;
+}
+
+.wiki-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    margin-bottom: 8px;
+}
+
+.wiki-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.wiki-arrow {
+    font-size: 2rem;
+    color: var(--accent-primary);
+    flex-shrink: 0;
+}
+
+.wiki-features {
+    background-color: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.wiki-features h3 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+}
+
+.wiki-features ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.wiki-features li {
+    padding: 8px 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.wiki-features li:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .wiki-link {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .wiki-arrow {
+        transform: rotate(90deg);
+    }
+}
