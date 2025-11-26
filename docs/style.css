@@ -1361,3 +1361,94 @@ tr:hover {
     display: inline-block;
     margin: 0 auto;
 }
+
+/* QQ 群横幅 */
+.qq-banner {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-success));
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.qq-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.qq-banner-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.qq-icon {
+    font-size: 1.5rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.qq-banner-btn {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: var(--accent-primary);
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.qq-banner-btn:hover {
+    background-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .qq-banner {
+        position: relative;
+    }
+    
+    .qq-banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .qq-banner-text {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+/* 增大 QR 码尺寸 */
+.qr-code {
+    width: 320px !important;
+    height: 320px !important;
+}
+
+@media (max-width: 968px) {
+    .qr-code {
+        width: 280px !important;
+        height: 280px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .qr-code {
+        width: 240px !important;
+        height: 240px !important;
+    }
+}
