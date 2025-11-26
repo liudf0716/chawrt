@@ -2,14 +2,112 @@
   {
     "id": "cmcc-rax3000m",
     "name": "CMCC RAX3000M",
-    "chip": "MediaTek MT7981",
+    "chip": "MediaTek MT7981B",
     "platform": "mediatek",
     "status": "stable",
     "specs": {
       "cpu": "MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)",
       "ram": "256MB DDR3",
-      "flash": "128MB SPI NAND",
+      "flash": "eMMC版: 128MB eMMC / NAND版: 128MB SPI NAND",
       "wifi": "MT7981 (2.4G) + MT7976 (5G) WiFi 6",
+      "ports": "3×GbE LAN + 1×GbE WAN"
+    }
+  },
+  {
+    "id": "xiaomi-ax3000t",
+    "name": "小米 AX3000T",
+    "chip": "MediaTek MT7981B",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)",
+      "ram": "256MB DDR3",
+      "flash": "128MB NAND",
+      "wifi": "WiFi 6 双频",
+      "ports": "3×GbE LAN + 1×GbE WAN"
+    }
+  },
+  {
+    "id": "xiaomi-wr30u",
+    "name": "小米 WR30U",
+    "chip": "MediaTek MT7981B",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)",
+      "ram": "256MB DDR3",
+      "flash": "128MB NAND",
+      "wifi": "WiFi 6 双频",
+      "ports": "3×GbE"
+    }
+  },
+  {
+    "id": "nokia-ea0326gmp",
+    "name": "诺基亚 EA0326GMP",
+    "chip": "MediaTek MT7981B",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)",
+      "ram": "256MB DDR3",
+      "flash": "128MB NAND",
+      "wifi": "WiFi 6 双频",
+      "ports": "4×GbE"
+    }
+  },
+  {
+    "id": "qihoo-360t7",
+    "name": "奇虎 360 T7",
+    "chip": "MediaTek MT7981B",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)",
+      "ram": "256MB DDR3",
+      "flash": "128MB NAND",
+      "wifi": "WiFi 6 双频",
+      "ports": "3×GbE LAN + 1×GbE WAN"
+    }
+  },
+  {
+    "id": "jcg-q30-pro",
+    "name": "JCG Q30 Pro",
+    "chip": "MediaTek MT7981B",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)",
+      "ram": "256MB DDR3",
+      "flash": "128MB NAND",
+      "wifi": "WiFi 6 双频",
+      "ports": "4×GbE"
+    }
+  },
+  {
+    "id": "jcg-q20",
+    "name": "JCG Q20",
+    "chip": "MediaTek MT7621",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7621AT (2×MIPS 1004Kc @ 880MHz)",
+      "ram": "256MB DDR3",
+      "flash": "16MB NOR",
+      "wifi": "双频 AC1200",
+      "ports": "5×GbE"
+    }
+  },
+  {
+    "id": "h3c-magic-nx30-pro",
+    "name": "H3C Magic NX30 Pro",
+    "chip": "MediaTek MT7981B",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)",
+      "ram": "256MB DDR3",
+      "flash": "128MB NAND",
+      "wifi": "WiFi 6 双频",
       "ports": "3×GbE LAN + 1×GbE WAN"
     }
   },
