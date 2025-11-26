@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="chawrt - 专业商用 WiFi OpenWrt 发行版，通过公安三所认证">
+    <title>chawrt - 专业商用 WiFi OpenWrt 发行版</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">chawrt</h1>
+                <p class="tagline">专业商用 WiFi OpenWrt 发行版</p>
+            </div>
+            <nav class="nav">
+                <a href="#intro">项目介绍</a>
+                <a href="#build">编译指南</a>
+                <a href="#devices">设备支持</a>
+                <a href="https://github.com/liudf0716/chawrt" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- 项目介绍 -->
+        <section id="intro" class="section intro-section">
+            <div class="container">
+                <h2 class="section-title">项目介绍</h2>
+                <div class="intro-grid">
+                    <div class="intro-main">
+                        <h3>关于 chawrt</h3>
+                        <p>chawrt 是基于 OpenWrt 的深度优化版本，专注于<strong>专业商用 WiFi 场景</strong>，面向企业、运营商及公共场所网络部署。</p>
+                        <p>项目在保持 OpenWrt 核心特性的基础上，集成了认证门户、内网穿透、VPN、流控、DPI 等企业级功能，并<strong>通过公安三所认证要求</strong>，满足国内网络安全合规需求。</p>
+                        
+                        <div class="highlight-box">
+                            <h4>核心优势</h4>
+                            <ul>
+                                <li>✓ 公安三所认证合规</li>
+                                <li>✓ 企业级认证门户</li>
+                                <li>✓ 完整的 VPN 解决方案</li>
+                                <li>✓ 高性能流量控制</li>
+                                <li>✓ 深度包检测（DPI）</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="architecture">
+                        <h3>系统架构</h3>
+                        <div class="arch-diagram">
+                            <div class="arch-layer">
+                                <div class="arch-title">应用层</div>
+                                <div class="arch-items">
+                                    <span>认证门户</span>
+                                    <span>管理界面</span>
+                                    <span>监控系统</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <div class="arch-title">功能层</div>
+                                <div class="arch-items">
+                                    <span>APFree-WiFiDog</span>
+                                    <span>xfrpc</span>
+                                    <span>IPSec VPN</span>
+                                    <span>流控</span>
+                                    <span>DPI</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <div class="arch-title">内核层</div>
+                                <div class="arch-items">
+                                    <span>eBPF</span>
+                                    <span>XFRM</span>
+                                    <span>tc</span>
+                                    <span>netfilter</span>
+                                </div>
+                            </div>
+                            <div class="arch-layer">
+                                <div class="arch-title">OpenWrt 核心</div>
+                                <div class="arch-items">
+                                    <span>Linux Kernel</span>
+                                    <span>uClibc/musl</span>
+                                    <span>busybox</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 功能模块详解 -->
+                <div class="features">
+                    <h3>功能模块</h3>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔐</div>
+                            <h4>APFree-WiFiDog</h4>
+                            <p>高性能认证门户系统，支持多种认证方式（微信、短信、账号密码），提供完整的用户管理和流量统计功能。</p>
+                            <div class="feature-tech">
+                                <span>Portal 认证</span>
+                                <span>流量统计</span>
+                                <span>用户管理</span>
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🌐</div>
+                            <h4>xfrpc</h4>
+                            <p>轻量级内网穿透工具，支持 TCP/UDP/HTTP/HTTPS 协议，实现远程管理和服务发布。</p>
+                            <div class="feature-tech">
+                                <span>内网穿透</span>
+                                <span>远程管理</span>
+                                <span>服务发布</span>
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔒</div>
+                            <h4>IPSec VPN</h4>
+                            <p>基于 strongSwan 的企业级 VPN 解决方案，使用 swanctl 配置管理，结合 XFRM 框架实现高性能加密传输。</p>
+                            <div class="feature-tech">
+                                <span>strongSwan</span>
+                                <span>swanctl</span>
+                                <span>XFRM</span>
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h4>流量控制</h4>
+                            <p>基于 eBPF 和 tc 的高性能流量整形系统，支持多级队列、带宽限制、优先级调度等功能。</p>
+                            <div class="feature-tech">
+                                <span>eBPF</span>
+                                <span>tc qdisc</span>
+                                <span>QoS</span>
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🔍</div>
+                            <h4>深度包检测 (DPI)</h4>
+                            <p>基于 eBPF 和用户态模块的 DPI 系统，实现应用层协议识别、行为分析和内容过滤。</p>
+                            <div class="feature-tech">
+                                <span>协议识别</span>
+                                <span>行为分析</span>
+                                <span>内容过滤</span>
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">✅</div>
+                            <h4>公安三所认证</h4>
+                            <p>完整实现公安部信息安全产品检测中心（公安三所）的技术要求，满足国内网络安全合规需求。</p>
+                            <div class="feature-tech">
+                                <span>日志审计</span>
+                                <span>实名认证</span>
+                                <span>行为管控</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 编译指南 -->
+        <section id="build" class="section build-section">
+            <div class="container">
+                <h2 class="section-title">编译指南</h2>
+                
+                <div class="build-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>安装依赖</h3>
+                            <p>在 Ubuntu/Debian 系统上安装编译所需的依赖包：</p>
+                            <pre><code>sudo apt update
+sudo apt install -y build-essential clang flex bison g++ gawk \
+gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
+python3-distutils rsync unzip zlib1g-dev file wget</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>拉取源码</h3>
+                            <p>克隆 chawrt 仓库到本地：</p>
+                            <pre><code>git clone https://github.com/liudf0716/chawrt.git
+cd chawrt</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>更新 feeds</h3>
+                            <p>更新并安装软件包源：</p>
+                            <pre><code>./scripts/feeds update -a
+./scripts/feeds install -a</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>配置编译选项</h3>
+                            <p>使用 menuconfig 配置目标设备和功能模块：</p>
+                            <pre><code># 使用预设配置（可选）
+cp configs/your-device.config .config
+
+# 或手动配置
+make menuconfig</code></pre>
+                            <div class="info-box">
+                                <strong>配置说明：</strong>
+                                <ul>
+                                    <li>Target System: 选择你的设备平台（如 MediaTek Ralink MIPS、Rockchip ARM 等）</li>
+                                    <li>Target Profile: 选择具体设备型号</li>
+                                    <li>LuCI → Applications: 选择需要的功能模块</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h3>开始编译</h3>
+                            <p>首次编译建议单线程以便查看错误信息：</p>
+                            <pre><code># 下载所需软件包
+make download V=s -j$(nproc)
+
+# 开始编译（首次建议单线程）
+make V=s
+
+# 后续编译可使用多线程
+make -j$(nproc)</code></pre>
+                            <div class="warning-box">
+                                <strong>注意：</strong>首次编译可能需要 1-3 小时，具体时间取决于网络速度和硬件性能。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <h3>获取固件</h3>
+                            <p>编译完成后，固件位于：</p>
+                            <pre><code>bin/targets/&lt;platform&gt;/&lt;subtarget&gt;/</code></pre>
+                            <p>固件文件通常包括：</p>
+                            <ul>
+                                <li><code>*-squashfs-sysupgrade.bin</code> - 用于升级已安装 OpenWrt 的设备</li>
+                                <li><code>*-squashfs-factory.bin</code> - 用于从官方固件刷入</li>
+                                <li><code>*-initramfs-kernel.bin</code> - 临时启动镜像（不会写入 flash）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 常见问题 -->
+                <div class="troubleshooting">
+                    <h3>常见编译问题</h3>
+                    <div class="faq-grid">
+                        <details class="faq-item">
+                            <summary>编译失败：下载软件包超时</summary>
+                            <div class="faq-content">
+                                <p><strong>解决方案：</strong></p>
+                                <ol>
+                                    <li>使用国内镜像源加速下载</li>
+                                    <li>手动下载失败的包到 <code>dl/</code> 目录</li>
+                                    <li>重新执行 <code>make download V=s</code></li>
+                                </ol>
+                            </div>
+                        </details>
+
+                        <details class="faq-item">
+                            <summary>软件包依赖冲突</summary>
+                            <div class="faq-content">
+                                <p><strong>解决方案：</strong></p>
+                                <ol>
+                                    <li>检查 <code>make menuconfig</code> 中是否选择了冲突的包</li>
+                                    <li>清理编译缓存：<code>make clean</code></li>
+                                    <li>重新配置并编译</li>
+                                </ol>
+                            </div>
+                        </details>
+
+                        <details class="faq-item">
+                            <summary>内核模块编译错误</summary>
+                            <div class="faq-content">
+                                <p><strong>解决方案：</strong></p>
+                                <ol>
+                                    <li>确认内核版本与模块兼容</li>
+                                    <li>检查是否安装了所有依赖包</li>
+                                    <li>查看详细错误信息：<code>make V=s</code></li>
+                                </ol>
+                            </div>
+                        </details>
+
+                        <details class="faq-item">
+                            <summary>磁盘空间不足</summary>
+                            <div class="faq-content">
+                                <p><strong>解决方案：</strong></p>
+                                <ol>
+                                    <li>编译至少需要 20GB 可用空间</li>
+                                    <li>清理旧的编译文件：<code>make clean</code></li>
+                                    <li>删除下载缓存：<code>rm -rf dl/</code>（谨慎操作）</li>
+                                </ol>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- 清理命令 -->
+                <div class="build-clean">
+                    <h3>清理命令</h3>
+                    <table class="clean-table">
+                        <tr>
+                            <th>命令</th>
+                            <th>说明</th>
+                        </tr>
+                        <tr>
+                            <td><code>make clean</code></td>
+                            <td>删除编译生成的文件，保留配置和下载的包</td>
+                        </tr>
+                        <tr>
+                            <td><code>make dirclean</code></td>
+                            <td>删除编译文件和交叉编译工具链</td>
+                        </tr>
+                        <tr>
+                            <td><code>make distclean</code></td>
+                            <td>完全清理，包括配置文件（不删除 dl/ 目录）</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 设备支持 -->
+        <section id="devices" class="section devices-section">
+            <div class="container">
+                <h2 class="section-title">设备支持列表</h2>
+                <p class="section-desc">以下是 chawrt 已支持的设备型号及刷机教程。更多设备支持持续更新中。</p>
+
+                <div class="devices-grid">
+                    <!-- CMCC RAX3000M -->
+                    <details class="device-card">
+                        <summary class="device-header">
+                            <div class="device-info">
+                                <h3>CMCC RAX3000M</h3>
+                                <span class="device-chip">MediaTek MT7981</span>
+                            </div>
+                            <span class="expand-icon">▼</span>
+                        </summary>
+                        <div class="device-content">
+                            <div class="device-specs">
+                                <h4>设备规格</h4>
+                                <ul>
+                                    <li><strong>CPU:</strong> MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)</li>
+                                    <li><strong>RAM:</strong> 256MB DDR3</li>
+                                    <li><strong>Flash:</strong> 128MB SPI NAND</li>
+                                    <li><strong>WiFi:</strong> MT7981 (2.4G) + MT7976 (5G) WiFi 6</li>
+                                    <li><strong>端口:</strong> 3×GbE LAN + 1×GbE WAN</li>
+                                </ul>
+                            </div>
+
+                            <div class="device-flash">
+                                <h4>刷机步骤</h4>
+                                <ol>
+                                    <li>
+                                        <strong>准备工作</strong>
+                                        <ul>
+                                            <li>下载 chawrt 固件：<code>cmcc-rax3000m-squashfs-factory.bin</code></li>
+                                            <li>准备网线连接电脑和路由器 LAN 口</li>
+                                            <li>备份原厂固件（可选）</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>进入 Breed/Uboot</strong>
+                                        <ul>
+                                            <li>断电状态下按住 Reset 键</li>
+                                            <li>上电 5-10 秒后松开 Reset</li>
+                                            <li>电脑 IP 设为 192.168.1.2，访问 192.168.1.1</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>刷入固件</strong>
+                                        <ul>
+                                            <li>在 Breed/Uboot 界面选择"固件更新"</li>
+                                            <li>上传 <code>factory.bin</code> 文件</li>
+                                            <li>等待刷写完成并重启</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>首次启动</strong>
+                                        <ul>
+                                            <li>等待 2-3 分钟系统初始化</li>
+                                            <li>访问 192.168.1.1 进入 LuCI 界面</li>
+                                            <li>默认无密码，首次登录需设置</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <div class="device-recovery">
+                                <h4>恢复原厂</h4>
+                                <p>如需恢复原厂固件，可在 Breed/Uboot 中刷入官方固件备份，或使用电信运营商提供的恢复工具。</p>
+                            </div>
+
+                            <div class="device-faq">
+                                <h4>常见问题</h4>
+                                <details>
+                                    <summary>刷机后无法启动</summary>
+                                    <p>检查是否使用了正确的固件型号，RAX3000M 需使用专用固件。如 Breed 仍可访问，重新刷入尝试。</p>
+                                </details>
+                                <details>
+                                    <summary>WiFi 无法使用</summary>
+                                    <p>首次启动后需在 LuCI 界面手动配置 WiFi SSID 和密码，然后启用无线。</p>
+                                </details>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- FastRhino R66S -->
+                    <details class="device-card">
+                        <summary class="device-header">
+                            <div class="device-info">
+                                <h3>FastRhino R66S</h3>
+                                <span class="device-chip">Rockchip RK3568</span>
+                            </div>
+                            <span class="expand-icon">▼</span>
+                        </summary>
+                        <div class="device-content">
+                            <div class="device-specs">
+                                <h4>设备规格</h4>
+                                <ul>
+                                    <li><strong>CPU:</strong> Rockchip RK3568 (4×ARM Cortex-A55 @ 2.0GHz)</li>
+                                    <li><strong>RAM:</strong> 1GB/2GB/4GB DDR4</li>
+                                    <li><strong>Flash:</strong> 8GB eMMC + TF 卡槽</li>
+                                    <li><strong>网络:</strong> 2×2.5GbE (RTL8125B)</li>
+                                    <li><strong>扩展:</strong> USB 3.0, HDMI</li>
+                                </ul>
+                            </div>
+
+                            <div class="device-flash">
+                                <h4>刷机步骤</h4>
+                                <ol>
+                                    <li>
+                                        <strong>准备工作</strong>
+                                        <ul>
+                                            <li>下载 chawrt 固件：<code>r66s-squashfs-sysupgrade.img.gz</code></li>
+                                            <li>准备 TF 卡（建议 8GB 以上，Class 10）</li>
+                                            <li>下载烧录工具：balenaEtcher 或 Rufus</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>制作启动卡</strong>
+                                        <ul>
+                                            <li>解压 <code>.img.gz</code> 得到 <code>.img</code> 文件</li>
+                                            <li>使用烧录工具将镜像写入 TF 卡</li>
+                                            <li>等待写入完成并校验</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>启动系统</strong>
+                                        <ul>
+                                            <li>插入 TF 卡到 R66S</li>
+                                            <li>上电启动，系统将从 TF 卡引导</li>
+                                            <li>等待 LED 指示灯稳定</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>写入 eMMC（可选）</strong>
+                                        <ul>
+                                            <li>SSH 登录：<code>ssh root@192.168.1.1</code></li>
+                                            <li>执行安装脚本：<code>install-to-emmc.sh</code></li>
+                                            <li>完成后移除 TF 卡重启</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <div class="device-recovery">
+                                <h4>恢复原厂</h4>
+                                <p>使用 Rockchip 线刷工具和官方固件包恢复 eMMC。或直接使用官方固件 TF 卡启动。</p>
+                            </div>
+
+                            <div class="device-faq">
+                                <h4>常见问题</h4>
+                                <details>
+                                    <summary>TF 卡无法启动</summary>
+                                    <p>检查 TF 卡是否正确烧录，尝试重新烧录或更换 TF 卡。确认 R66S 支持 TF 卡启动（部分批次可能需要修改 bootloader）。</p>
+                                </details>
+                                <details>
+                                    <summary>2.5G 网卡无法识别</summary>
+                                    <p>确认内核已包含 RTL8125 驱动。可在 LuCI 的系统日志中查看网卡识别情况。</p>
+                                </details>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Newifi D2 -->
+                    <details class="device-card">
+                        <summary class="device-header">
+                            <div class="device-info">
+                                <h3>Newifi D2</h3>
+                                <span class="device-chip">MediaTek MT7621</span>
+                            </div>
+                            <span class="expand-icon">▼</span>
+                        </summary>
+                        <div class="device-content">
+                            <div class="device-specs">
+                                <h4>设备规格</h4>
+                                <ul>
+                                    <li><strong>CPU:</strong> MediaTek MT7621AT (2×MIPS 1004Kc @ 880MHz)</li>
+                                    <li><strong>RAM:</strong> 512MB DDR3</li>
+                                    <li><strong>Flash:</strong> 32MB SPI NOR (GD25Q256)</li>
+                                    <li><strong>WiFi:</strong> MT7603 (2.4G) + MT7612 (5G)</li>
+                                    <li><strong>端口:</strong> 3×GbE LAN + 1×GbE WAN + USB 3.0</li>
+                                </ul>
+                            </div>
+
+                            <div class="device-flash">
+                                <h4>刷机步骤</h4>
+                                <ol>
+                                    <li>
+                                        <strong>准备工作</strong>
+                                        <ul>
+                                            <li>下载 chawrt 固件：<code>newifi-d2-squashfs-sysupgrade.bin</code></li>
+                                            <li>确认已刷入 Breed 引导（强烈推荐）</li>
+                                            <li>网线连接电脑和路由器</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>进入 Breed</strong>
+                                        <ul>
+                                            <li>断电按住 Reset 键</li>
+                                            <li>上电 5 秒后松开</li>
+                                            <li>浏览器访问 192.168.1.1</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>刷入固件</strong>
+                                        <ul>
+                                            <li>选择"固件更新"</li>
+                                            <li>勾选"自动重启"</li>
+                                            <li>上传固件并刷写</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>访问系统</strong>
+                                        <ul>
+                                            <li>等待重启完成（约 2 分钟）</li>
+                                            <li>访问 192.168.1.1</li>
+                                            <li>初次登录设置密码</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <div class="device-recovery">
+                                <h4>恢复原厂</h4>
+                                <p>如已刷入 Breed，可在 Breed 界面刷入原厂固件备份。未刷 Breed 的设备可使用官方救砖工具恢复。</p>
+                            </div>
+
+                            <div class="device-faq">
+                                <h4>常见问题</h4>
+                                <details>
+                                    <summary>如何刷入 Breed</summary>
+                                    <p>搜索"Newifi D2 Breed 刷入教程"，通常可通过官方固件漏洞或 TTL 串口刷入。Breed 可避免变砖风险。</p>
+                                </details>
+                                <details>
+                                    <summary>USB 3.0 无法识别硬盘</summary>
+                                    <p>检查是否安装了 USB 存储相关内核模块（kmod-usb-storage、kmod-fs-ext4 等）。部分固件默认未包含。</p>
+                                </details>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- 更多设备占位 -->
+                    <div class="device-card device-placeholder">
+                        <div class="device-header">
+                            <div class="device-info">
+                                <h3>更多设备支持</h3>
+                                <span class="device-chip">持续更新中</span>
+                            </div>
+                        </div>
+                        <div class="device-content">
+                            <p>chawrt 正在适配更多设备型号，包括但不限于：</p>
+                            <ul>
+                                <li>Xiaomi 路由器系列</li>
+                                <li>Redmi 路由器系列</li>
+                                <li>NanoPi 系列</li>
+                                <li>Orange Pi 系列</li>
+                                <li>其他 MediaTek / Rockchip 平台设备</li>
+                            </ul>
+                            <p>如有设备适配需求或愿意贡献设备支持，欢迎在 <a href="https://github.com/liudf0716/chawrt/issues" target="_blank">GitHub Issues</a> 中提出。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 贡献与支持 -->
+        <section class="section contribute-section">
+            <div class="container">
+                <h2 class="section-title">参与贡献</h2>
+                <div class="contribute-grid">
+                    <div class="contribute-card">
+                        <h3>🐛 报告问题</h3>
+                        <p>发现 Bug 或有功能建议？欢迎在 GitHub Issues 中反馈。</p>
+                        <a href="https://github.com/liudf0716/chawrt/issues" class="btn" target="_blank">提交 Issue</a>
+                    </div>
+                    <div class="contribute-card">
+                        <h3>💻 提交代码</h3>
+                        <p>欢迎提交 Pull Request 改进代码、修复 Bug 或添加新功能。</p>
+                        <a href="https://github.com/liudf0716/chawrt/pulls" class="btn" target="_blank">提交 PR</a>
+                    </div>
+                    <div class="contribute-card">
+                        <h3>📖 完善文档</h3>
+                        <p>帮助完善设备刷机教程、使用文档和常见问题解答。</p>
+                        <a href="https://github.com/liudf0716/chawrt" class="btn" target="_blank">查看项目</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h4>chawrt</h4>
+                    <p>专业商用 WiFi OpenWrt 发行版</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/liudf0716/chawrt" target="_blank">GitHub</a>
+                    <a href="https://github.com/liudf0716/chawrt/issues" target="_blank">Issues</a>
+                    <a href="https://github.com/liudf0716/chawrt/wiki" target="_blank">Wiki</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 chawrt Project. Licensed under GPL-2.0</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
