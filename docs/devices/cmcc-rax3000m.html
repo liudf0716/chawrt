@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CMCC RAX3000M 刷机教程 - chawrt">
-    <title>CMCC RAX3000M 刷机教程 - chawrt</title>
+    <meta name="description" content="CMCC RAX3000M 刷 OpenWrt ChaWrt 完整教程 - 支持 eMMC 和 NAND 版本，详细的刷机步骤和固件下载">
+    <meta name="keywords" content="CMCC RAX3000M, OpenWrt, ChaWrt, 移动 RAX3000M, MT7981B, 刷机教程, eMMC 刷机, NAND 刷机, OpenWrt CMCC RAX3000M, 中国移动路由器, WiFi 6 路由器">
+    <title>CMCC RAX3000M 刷 OpenWrt ChaWrt 教程 - eMMC/NAND 完整步骤</title>
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -35,9 +36,19 @@
                 </div>
 
                 <div class="device-detail-header">
-                    <h1>CMCC RAX3000M</h1>
-                    <span class="device-chip">MediaTek MT7981</span>
+                    <h1>CMCC RAX3000M (中国移动)</h1>
+                    <span class="device-chip">MediaTek MT7981B</span>
                     <span class="device-status device-status-stable">稳定支持</span>
+                </div>
+
+                <div class="version-notice">
+                    <h3>⚠️ 重要提示：区分 eMMC / NAND 版本</h3>
+                    <p>CMCC RAX3000M 有两个版本，刷机步骤<strong>完全不同</strong>，请务必先确认您的设备版本：</p>
+                    <ul>
+                        <li><strong>eMMC 版本</strong>：机身标签带 "<strong>CH EC CMIIT ID</strong>"</li>
+                        <li><strong>NAND 版本</strong>：机身标签带 "<strong>CH    CMIIT ID</strong>" (EC 位置为空)</li>
+                    </ul>
+                    <p class="warning-text">⛔ 两个版本的 Preloader 和 FIP 文件<strong>不可混用</strong>，使用错误固件会导致设备变砖！</p>
                 </div>
 
                 <div class="device-detail-grid">
@@ -46,7 +57,7 @@
                         <h2>设备规格</h2>
                         <table class="specs-table">
                             <tr>
-                                <th>CPU</th>
+                                <th>SoC</th>
                                 <td>MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)</td>
                             </tr>
                             <tr>
@@ -55,15 +66,19 @@
                             </tr>
                             <tr>
                                 <th>闪存</th>
-                                <td>128MB SPI NAND</td>
+                                <td>eMMC 版: 128MB eMMC<br>NAND 版: 128MB SPI NAND</td>
                             </tr>
                             <tr>
                                 <th>无线</th>
-                                <td>MT7981 (2.4G) + MT7976 (5G) WiFi 6</td>
+                                <td>MT7981 (2.4G) + MT7976 (5G)<br>WiFi 6 (802.11ax)</td>
                             </tr>
                             <tr>
                                 <th>端口</th>
                                 <td>3×GbE LAN + 1×GbE WAN</td>
+                            </tr>
+                            <tr>
+                                <th>制造商</th>
+                                <td>中国移动 (CMCC)</td>
                             </tr>
                         </table>
                     </div>
@@ -71,22 +86,31 @@
                     <!-- 固件下载 -->
                     <div class="detail-card">
                         <h2>固件下载</h2>
+                        <p class="download-desc-text">请根据您的设备版本下载对应的固件包：</p>
                         <div class="download-links">
                             <a href="https://github.com/liudf0716/chawrt/releases" class="download-btn" target="_blank">
-                                <span class="download-icon">📦</span>
+                                <span class="download-icon">💾</span>
                                 <div class="download-info">
-                                    <div class="download-title">Factory 固件</div>
-                                    <div class="download-desc">从官方固件刷入</div>
+                                    <div class="download-title">eMMC 版固件包</div>
+                                    <div class="download-desc">*-emmc-gpt.bin, *-emmc-preloader.bin 等</div>
+                                </div>
+                            </a>
+                            <a href="https://github.com/liudf0716/chawrt/releases" class="download-btn" target="_blank">
+                                <span class="download-icon">💾</span>
+                                <div class="download-info">
+                                    <div class="download-title">NAND 版固件包</div>
+                                    <div class="download-desc">*-nand-preloader.bin, *-nand-bl31-uboot.fip 等</div>
                                 </div>
                             </a>
                             <a href="https://github.com/liudf0716/chawrt/releases" class="download-btn" target="_blank">
                                 <span class="download-icon">🔄</span>
                                 <div class="download-info">
                                     <div class="download-title">Sysupgrade 固件</div>
-                                    <div class="download-desc">从 OpenWrt 升级</div>
+                                    <div class="download-desc">*-squashfs-sysupgrade.itb (固化系统用)</div>
                                 </div>
                             </a>
                         </div>
+                    </div>
                     </div>
                 </div>
 
@@ -94,15 +118,18 @@
                 <div class="tutorial-section">
                     <h2>刷机教程</h2>
                     
+                    <p class="tutorial-intro">CMCC RAX3000M 采用 <strong>TFTP + initramfs 临时系统 → sysupgrade 固化</strong>的刷机方式。请根据您的设备版本选择对应教程：</p>
+
+                    <!-- 通用准备步骤 -->
+                    <h3 class="tutorial-subtitle">步骤 0：获取 SSH 访问（原厂固件）</h3>
                     <div class="tutorial-steps">
                         <div class="tutorial-step">
                             <div class="step-number">1</div>
                             <div class="step-content">
-                                <h3>准备工作</h3>
+                                <h4>下载并解包配置文件</h4>
                                 <ul>
-                                    <li>下载 chawrt 固件：<code>cmcc-rax3000m-squashfs-factory.bin</code></li>
-                                    <li>准备网线连接电脑和路由器 LAN 口</li>
-                                    <li>备份原厂固件（可选但推荐）</li>
+                                    <li>登录路由器 Web 管理界面，下载备份配置文件 <code>cfg_export_config_file.conf</code></li>
+                                    <li>解包配置：<pre><code>tar -zxf cfg_export_config_file.conf</code></pre></li>
                                 </ul>
                             </div>
                         </div>
@@ -110,12 +137,12 @@
                         <div class="tutorial-step">
                             <div class="step-number">2</div>
                             <div class="step-content">
-                                <h3>进入 Breed/Uboot</h3>
+                                <h4>修改配置启用 SSH</h4>
                                 <ul>
-                                    <li>断电状态下按住 Reset 键</li>
-                                    <li>上电保持 5-10 秒后松开 Reset</li>
-                                    <li>电脑网卡 IP 设为 <code>192.168.1.2</code>，子网掩码 <code>255.255.255.0</code></li>
-                                    <li>浏览器访问 <code>192.168.1.1</code> 进入 Breed/Uboot 界面</li>
+                                    <li>编辑 <code>etc/config/dropbear</code>，将 <code>enable</code> 设置为 <code>1</code></li>
+                                    <li>编辑 <code>etc/shadow</code>，清空 root 密码字段：
+                                        <pre><code>root::19523:0:99999:7:::</code></pre>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -123,42 +150,272 @@
                         <div class="tutorial-step">
                             <div class="step-number">3</div>
                             <div class="step-content">
-                                <h3>刷入固件</h3>
+                                <h4>重新打包并上传</h4>
                                 <ul>
-                                    <li>在 Breed/Uboot 界面选择"固件更新"或"Firmware Update"</li>
-                                    <li>选择下载的 <code>factory.bin</code> 固件文件</li>
-                                    <li>点击上传/更新，等待进度条完成</li>
-                                    <li>刷写完成后自动重启（如未自动重启，手动重启设备）</li>
+                                    <li>重新打包配置：<pre><code>tar -zcf cfg_export_config_file.conf etc/</code></pre></li>
+                                    <li>上传修改后的配置文件到路由器</li>
+                                    <li>重启路由器后即可 SSH 登录（用户名 root，无密码）</li>
                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- eMMC 版本教程 -->
+                    <h3 class="tutorial-subtitle" id="emmc-guide">📘 eMMC 版本刷机步骤</h3>
+                    <div class="info-box">
+                        <p><strong>适用于</strong>：机身标签带 "CH EC CMIIT ID" 的设备</p>
+                        <p><strong>所需文件</strong>：*-emmc-gpt.bin, *-emmc-preloader.bin, *-emmc-bl31-uboot.fip, *-initramfs-recovery.itb, *-squashfs-sysupgrade.itb</p>
+                    </div>
+
+                    <div class="tutorial-steps">
+                        <div class="tutorial-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>备份 Factory 分区（重要！）</h4>
+                                <pre><code>dd if=/dev/mmcblk0p2 of=/tmp/factory_backup.bin</code></pre>
+                                <p class="warning-text">⚠️ Factory 分区包含设备 MAC 地址等关键信息，请务必备份并保存到电脑！</p>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>写入新的 GPT 分区表</h4>
+                                <pre><code>dd if=openwrt-mediatek-filogic-cmcc_rax3000m-emmc-gpt.bin \
+   of=/dev/mmcblk0 bs=512 seek=0 count=34 conv=fsync</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>擦除并写入 BL2 (Preloader)</h4>
+                                <pre><code>echo 0 > /sys/block/mmcblk0boot0/force_ro
+dd if=/dev/zero of=/dev/mmcblk0boot0 bs=512 count=8192 conv=fsync
+dd if=openwrt-mediatek-filogic-cmcc_rax3000m-emmc-preloader.bin \
+   of=/dev/mmcblk0boot0 bs=512 conv=fsync</code></pre>
                             </div>
                         </div>
 
                         <div class="tutorial-step">
                             <div class="step-number">4</div>
                             <div class="step-content">
-                                <h3>首次启动</h3>
+                                <h4>擦除并写入 FIP (BL31 + U-Boot)</h4>
+                                <pre><code>dd if=/dev/zero of=/dev/mmcblk0 bs=512 seek=13312 count=8192 conv=fsync
+dd if=openwrt-mediatek-filogic-cmcc_rax3000m-emmc-bl31-uboot.fip \
+   of=/dev/mmcblk0 bs=512 seek=13312 conv=fsync</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h4>准备 TFTP 服务器</h4>
                                 <ul>
-                                    <li>等待 2-3 分钟系统初始化</li>
-                                    <li>电脑网卡设置为自动获取 IP（DHCP）</li>
-                                    <li>访问 <code>192.168.1.1</code> 进入 LuCI 管理界面</li>
-                                    <li>默认无密码，首次登录会要求设置管理员密码</li>
+                                    <li>在 PC 上设置静态 IP：
+                                        <ul>
+                                            <li>IP: <code>192.168.1.254</code></li>
+                                            <li>网关: <code>192.168.1.1</code></li>
+                                        </ul>
+                                    </li>
+                                    <li>启动 TFTP 服务器，提供文件：
+                                        <code>openwrt-mediatek-filogic-cmcc_rax3000m-initramfs-recovery.itb</code>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">6</div>
+                            <div class="step-content">
+                                <h4>TFTP 恢复启动</h4>
+                                <ul>
+                                    <li>路由器断电 → 上电</li>
+                                    <li>设备会自动通过 TFTP 下载 initramfs 镜像并启动</li>
+                                    <li>等待 LED 指示灯稳定，设备进入 OpenWrt 临时系统</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">7</div>
+                            <div class="step-content">
+                                <h4>执行 sysupgrade 固化系统</h4>
+                                <ul>
+                                    <li>SSH 登录：<code>ssh root@192.168.1.1</code></li>
+                                    <li>执行固化命令：
+                                        <pre><code>sysupgrade openwrt-mediatek-filogic-cmcc_rax3000m-squashfs-sysupgrade.itb</code></pre>
+                                    </li>
+                                    <li>等待系统重启完成</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">8</div>
+                            <div class="step-content">
+                                <h4>（可选）写入 Recovery 引导</h4>
+                                <pre><code>dd if=openwrt-mediatek-filogic-cmcc_rax3000m-initramfs-recovery.itb \
+   of=/dev/mmcblk0p4 bs=512 conv=fsync</code></pre>
+                                <p>这样可在系统出现问题时通过 TFTP 快速恢复。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NAND 版本教程 -->
+                    <h3 class="tutorial-subtitle" id="nand-guide">📗 NAND 版本刷机步骤</h3>
+                    <div class="info-box">
+                        <p><strong>适用于</strong>：机身标签带 "CH    CMIIT ID" (EC 位置为空) 的设备</p>
+                        <p><strong>所需文件</strong>：*-nand-preloader.bin, *-nand-bl31-uboot.fip, *-initramfs-recovery.itb, *-squashfs-sysupgrade.itb</p>
+                    </div>
+
+                    <div class="tutorial-steps">
+                        <div class="tutorial-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>备份 Factory 分区（重要！）</h4>
+                                <pre><code>dd if=/dev/mtdX of=/tmp/factory_backup.bin</code></pre>
+                                <p class="info-text">💡 通过 <code>cat /proc/mtd</code> 查看 factory 分区对应的 mtdX</p>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>擦除并写入 BL2</h4>
+                                <pre><code>mtd erase BL2
+mtd write openwrt-mediatek-filogic-cmcc_rax3000m-nand-preloader.bin BL2</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>擦除并写入 FIP</h4>
+                                <pre><code>mtd erase FIP
+mtd write openwrt-mediatek-filogic-cmcc_rax3000m-nand-bl31-uboot.fip FIP</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>准备 TFTP 服务器</h4>
+                                <ul>
+                                    <li>PC 设置静态 IP：<code>192.168.1.254</code>，网关：<code>192.168.1.1</code></li>
+                                    <li>启动 TFTP 服务器，提供文件：
+                                        <code>openwrt-mediatek-filogic-cmcc_rax3000m-initramfs-recovery.itb</code>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h4>TFTP 恢复启动</h4>
+                                <ul>
+                                    <li>路由器断电 → 上电</li>
+                                    <li>等待 TFTP 恢复启动到 OpenWrt 临时系统</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">6</div>
+                            <div class="step-content">
+                                <h4>清理 NAND 并重建 UBI</h4>
+                                <pre><code>ubidetach -p /dev/mtd0
+ubiformat -y /dev/mtd0
+ubiattach -p /dev/mtd0</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">7</div>
+                            <div class="step-content">
+                                <h4>创建 UBI 卷</h4>
+                                <pre><code>ubimkvol /dev/ubi0 -n 0 -N ubootenv -s 128KiB
+ubimkvol /dev/ubi0 -n 1 -N ubootenv2 -s 128KiB</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">8</div>
+                            <div class="step-content">
+                                <h4>（可选）创建 Recovery 卷</h4>
+                                <pre><code>ubimkvol /dev/ubi0 -n 2 -N recovery -s 20MiB
+ubiupdatevol /dev/ubi0_2 \
+   openwrt-mediatek-filogic-cmcc_rax3000m-initramfs-recovery.itb</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="tutorial-step">
+                            <div class="step-number">9</div>
+                            <div class="step-content">
+                                <h4>执行 sysupgrade 固化系统</h4>
+                                <pre><code>sysupgrade openwrt-mediatek-filogic-cmcc_rax3000m-squashfs-sysupgrade.itb</code></pre>
+                                <p>等待系统重启完成即可。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 重要说明 -->
+                    <div class="warning-box">
+                        <h4>✅ TFTP 恢复功能说明</h4>
+                        <ul>
+                            <li>TFTP 恢复功能在 eMMC 和 NAND 设备上都<strong>永久保留</strong></li>
+                            <li>即使刷机失败，也可以通过 TFTP 恢复，<strong>不会变砖</strong></li>
+                            <li>initramfs 镜像用于临时启动，sysupgrade 镜像用于固化系统</li>
+                            <li><span class="highlight-text">⚠️ eMMC 与 NAND 的 preloader/FIP 完全不同，不可混用！</span></li>
+                        </ul>
                     </div>
                 </div>
+
 
                 <!-- 恢复原厂 -->
                 <div class="recovery-section">
                     <h2>恢复原厂固件</h2>
+                    
                     <div class="warning-box">
-                        <p><strong>方法 1：通过 Breed 恢复</strong></p>
-                        <p>如之前备份了原厂固件，可在 Breed 界面刷入备份文件恢复。</p>
+                        <h4>⚠️ 恢复原厂需要原厂固件文件</h4>
+                        <p>由于中国移动未公开 RAX3000M 的原厂固件下载，恢复原厂较为困难。建议：</p>
+                        <ul>
+                            <li>在刷机前通过 <code>dd</code> 命令备份完整的系统分区</li>
+                            <li>保留一台未刷机的同型号设备作为备份</li>
+                            <li>联系移动运营商获取官方固件</li>
+                        </ul>
                     </div>
+
                     <div class="info-box">
-                        <p><strong>方法 2：使用官方工具</strong></p>
-                        <p>联系电信运营商获取官方固件恢复工具，或使用官方提供的救砖方案。</p>
+                        <h4>✅ 通过 TFTP 临时启动原厂系统</h4>
+                        <p>如果您在刷机前备份了原厂系统：</p>
+                        <ol>
+                            <li>使用 TFTP 加载 initramfs 进入临时 OpenWrt</li>
+                            <li>通过 <code>dd</code> 命令恢复备份的系统分区</li>
+                            <li>重启即可回到原厂系统</li>
+                        </ol>
                     </div>
+
+                    <h4>备份系统分区命令示例</h4>
+                    <p><strong>eMMC 版本：</strong></p>
+                    <pre><code># 查看分区
+cat /proc/partitions
+
+# 备份整个 eMMC (危险！文件很大)
+dd if=/dev/mmcblk0 of=/tmp/emmc_full_backup.img bs=1M
+
+# 或只备份关键分区
+dd if=/dev/mmcblk0p2 of=/tmp/factory.bin
+dd if=/dev/mmcblk0p5 of=/tmp/rootfs.bin</code></pre>
+
+                    <p><strong>NAND 版本：</strong></p>
+                    <pre><code># 查看 MTD 分区
+cat /proc/mtd
+
+# 备份关键分区
+dd if=/dev/mtd4 of=/tmp/factory.bin
+dd if=/dev/mtd5 of=/tmp/rootfs.bin</code></pre>
                 </div>
 
                 <!-- 常见问题 -->
@@ -166,62 +423,91 @@
                     <h2>常见问题</h2>
                     
                     <details class="faq-item">
-                        <summary>刷机后无法启动，LED 灯不正常</summary>
+                        <summary>如何确认我的设备是 eMMC 还是 NAND 版本？</summary>
                         <div class="faq-content">
-                            <p><strong>可能原因：</strong></p>
+                            <p><strong>查看机身底部标签：</strong></p>
                             <ul>
-                                <li>固件型号不匹配 - 确认下载的是 RAX3000M 专用固件</li>
-                                <li>刷写过程中断 - 重新进入 Breed 尝试再次刷入</li>
+                                <li><strong>eMMC 版本</strong>：标签上有 "CH EC CMIIT ID"（EC 两个字母）</li>
+                                <li><strong>NAND 版本</strong>：标签上有 "CH    CMIIT ID"（EC 位置为空格）</li>
                             </ul>
-                            <p><strong>解决方法：</strong></p>
+                            <p>两个版本的刷机步骤和固件文件完全不同，请务必确认后再刷机。</p>
+                        </div>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>刷机后无法启动怎么办？</summary>
+                        <div class="faq-content">
+                            <p><strong>不要担心！</strong> RAX3000M 内置 TFTP 恢复功能，即使刷机失败也不会变砖。</p>
+                            <p><strong>恢复步骤：</strong></p>
                             <ol>
-                                <li>尝试进入 Breed（按 Reset 上电）</li>
-                                <li>如能进入 Breed，重新刷入正确固件</li>
-                                <li>如无法进入 Breed，可能需要 TTL 救砖</li>
+                                <li>在 PC 上设置静态 IP: 192.168.1.254</li>
+                                <li>启动 TFTP 服务器，提供 initramfs-recovery.itb 文件</li>
+                                <li>路由器断电 → 上电</li>
+                                <li>设备会自动通过 TFTP 下载并启动临时系统</li>
+                                <li>进入临时系统后重新执行 sysupgrade</li>
                             </ol>
                         </div>
                     </details>
 
                     <details class="faq-item">
-                        <summary>WiFi 无法使用或搜索不到信号</summary>
+                        <summary>为什么必须备份 Factory 分区？</summary>
                         <div class="faq-content">
-                            <p><strong>解决方法：</strong></p>
-                            <ol>
-                                <li>登录 LuCI 界面：<code>192.168.1.1</code></li>
-                                <li>进入"网络" → "无线"</li>
-                                <li>点击"添加"或"启用"无线网络</li>
-                                <li>设置 SSID（WiFi 名称）和密码</li>
-                                <li>点击"保存&应用"</li>
-                            </ol>
-                            <p>首次刷入 chawrt 后，WiFi 默认是禁用状态，需要手动配置启用。</p>
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>无法进入 Breed/Uboot 界面</summary>
-                        <div class="faq-content">
-                            <p><strong>检查事项：</strong></p>
+                            <p>Factory 分区包含设备的<strong>唯一信息</strong>：</p>
                             <ul>
-                                <li>确认按 Reset 的时机：必须是断电状态下按住，然后上电</li>
-                                <li>按住时间是否足够：建议保持 8-10 秒</li>
-                                <li>电脑 IP 配置：必须手动设置为 <code>192.168.1.x</code> 网段</li>
-                                <li>网线连接：必须连接到 LAN 口，而非 WAN 口</li>
+                                <li>MAC 地址</li>
+                                <li>WiFi 校准数据</li>
+                                <li>设备序列号</li>
                             </ul>
-                            <p><strong>替代方法：</strong></p>
-                            <p>部分批次的 RAX3000M 可能未预装 Breed，可通过官方固件的漏洞或 TTL 串口刷入 Breed。</p>
+                            <p>如果丢失 Factory 分区：</p>
+                            <ul>
+                                <li>WiFi 性能可能下降</li>
+                                <li>MAC 地址可能变成随机值</li>
+                                <li>无法恢复原厂固件</li>
+                            </ul>
+                            <p>请务必将备份文件保存到电脑上安全的位置！</p>
                         </div>
                     </details>
 
                     <details class="faq-item">
-                        <summary>刷机后网速变慢</summary>
+                        <summary>WiFi 性能不如原厂固件？</summary>
                         <div class="faq-content">
-                            <p><strong>优化建议：</strong></p>
+                            <p><strong>可能原因和解决方案：</strong></p>
                             <ol>
-                                <li>检查 WiFi 信道设置，避开拥挤信道</li>
-                                <li>确认硬件加速已启用（LuCI → 网络 → Turbo ACC）</li>
-                                <li>关闭不必要的服务和插件</li>
-                                <li>更新到最新版本固件</li>
+                                <li><strong>未恢复 Factory 分区</strong>：确保正确备份并恢复了 Factory 分区</li>
+                                <li><strong>信道拥挤</strong>：在 LuCI 中调整 WiFi 信道，选择干扰较少的信道</li>
+                                <li><strong>发射功率</strong>：可以在 LuCI → 网络 → 无线 中调整发射功率</li>
+                                <li><strong>国家码设置</strong>：确认国家码设置为 CN (中国)</li>
                             </ol>
+                        </div>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>TFTP 服务器推荐使用什么软件？</summary>
+                        <div class="faq-content">
+                            <p><strong>Windows 系统：</strong></p>
+                            <ul>
+                                <li>Tftpd64 / Tftpd32（推荐，简单易用）</li>
+                                <li>SolarWinds TFTP Server</li>
+                            </ul>
+                            <p><strong>Linux / macOS 系统：</strong></p>
+                            <ul>
+                                <li>使用系统自带的 <code>in.tftpd</code></li>
+                                <li>或安装 <code>atftpd</code></li>
+                            </ul>
+                            <p>记得将固件文件重命名为 initramfs-recovery.itb 并放在 TFTP 根目录。</p>
+                        </div>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>可以直接从 eMMC 版本切换到 NAND 版本吗？</summary>
+                        <div class="faq-content">
+                            <p><strong>不可以！</strong></p>
+                            <p>eMMC 和 NAND 是<strong>硬件层面</strong>的差异，两者的存储介质完全不同：</p>
+                            <ul>
+                                <li>eMMC 版本使用 eMMC 闪存芯片</li>
+                                <li>NAND 版本使用 SPI NAND 闪存芯片</li>
+                            </ul>
+                            <p>固件、分区表、引导加载程序都完全不同，<strong>不能互刷</strong>。必须根据您的硬件版本选择对应的固件。</p>
                         </div>
                     </details>
                 </div>

@@ -1456,3 +1456,66 @@ tr:hover {
     transition: var(--transition);
     max-width: 450px;
 }
+
+/* CMCC RAX3000M 特殊样式 */
+.version-notice {
+    background: linear-gradient(135deg, rgba(210, 153, 34, 0.15), rgba(248, 81, 73, 0.15));
+    border: 2px solid var(--accent-warning);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+}
+
+.version-notice h3 {
+    color: var(--accent-warning);
+    margin-bottom: 16px;
+}
+
+.version-notice ul {
+    margin: 16px 0 16px 24px;
+}
+
+.warning-text {
+    color: var(--accent-danger);
+    font-weight: 600;
+}
+
+.info-text {
+    color: var(--accent-primary);
+    font-style: italic;
+}
+
+.highlight-text {
+    background-color: var(--accent-warning);
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+}
+
+.tutorial-intro {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    line-height: 1.8;
+}
+
+.tutorial-subtitle {
+    color: var(--accent-primary);
+    font-size: 1.75rem;
+    margin: 48px 0 24px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tutorial-step h4 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+}
+
+.download-desc-text {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+}
