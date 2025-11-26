@@ -1628,3 +1628,33 @@ tr:hover {
         transform: rotate(90deg);
     }
 }
+
+/* SEO 关键词区域 */
+.seo-keywords {
+    margin-top: 32px;
+    padding: 24px;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.3);
+    line-height: 1.6;
+}
+
+.seo-keywords h3 {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.seo-keywords p {
+    margin: 0;
+    text-align: justify;
+}
+
+@media (max-width: 768px) {
+    .seo-keywords {
+        font-size: 0.7rem;
+        padding: 16px;
+    }
+}
