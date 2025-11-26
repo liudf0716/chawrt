@@ -1207,3 +1207,157 @@ tr:hover {
         gap: 12px;
     }
 }
+
+/* 联系方式部分 */
+.contact-section {
+    background-color: var(--bg-secondary);
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 48px;
+    align-items: start;
+}
+
+.contact-text h3 {
+    color: var(--accent-primary);
+    font-size: 1.75rem;
+    margin-bottom: 16px;
+}
+
+.contact-text p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin-bottom: 24px;
+    line-height: 1.7;
+}
+
+.contact-features {
+    list-style: none;
+    margin: 24px 0;
+    padding: 0;
+}
+
+.contact-features li {
+    padding: 10px 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.contact-features li:last-child {
+    border-bottom: none;
+}
+
+.contact-methods {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px solid var(--border-color);
+}
+
+.contact-methods h4 {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+}
+
+.contact-methods p {
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+
+.contact-methods strong {
+    color: var(--text-primary);
+    min-width: 80px;
+    display: inline-block;
+}
+
+.contact-qr {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.qr-card {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.qr-card:hover {
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow);
+    transform: translateY(-4px);
+}
+
+.qr-code {
+    width: 280px;
+    height: 280px;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 8px;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.qr-caption {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin: 0;
+}
+
+/* 响应式调整 - 联系方式 */
+@media (max-width: 968px) {
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .contact-qr {
+        justify-content: center;
+    }
+
+    .qr-code {
+        width: 240px;
+        height: 240px;
+    }
+}
+
+@media (max-width: 480px) {
+    .qr-code {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+/* 设备详情页联系 CTA */
+.contact-cta {
+    margin-top: 48px;
+    padding: 32px;
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(63, 185, 80, 0.1));
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.contact-cta h3 {
+    color: var(--accent-primary);
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+}
+
+.contact-cta p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin-bottom: 24px;
+}
+
+.contact-cta .btn {
+    display: inline-block;
+    margin: 0 auto;
+}
