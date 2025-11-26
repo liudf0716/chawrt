@@ -1,0 +1,44 @@
+[
+  {
+    "id": "cmcc-rax3000m",
+    "name": "CMCC RAX3000M",
+    "chip": "MediaTek MT7981",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)",
+      "ram": "256MB DDR3",
+      "flash": "128MB SPI NAND",
+      "wifi": "MT7981 (2.4G) + MT7976 (5G) WiFi 6",
+      "ports": "3×GbE LAN + 1×GbE WAN"
+    }
+  },
+  {
+    "id": "fastrhino-r66s",
+    "name": "FastRhino R66S",
+    "chip": "Rockchip RK3568",
+    "platform": "rockchip",
+    "status": "stable",
+    "specs": {
+      "cpu": "Rockchip RK3568 (4×ARM Cortex-A55 @ 2.0GHz)",
+      "ram": "1GB/2GB/4GB DDR4",
+      "flash": "8GB eMMC + TF 卡槽",
+      "network": "2×2.5GbE (RTL8125B)",
+      "expansion": "USB 3.0, HDMI"
+    }
+  },
+  {
+    "id": "newifi-d2",
+    "name": "Newifi D2",
+    "chip": "MediaTek MT7621",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7621AT (2×MIPS 1004Kc @ 880MHz)",
+      "ram": "512MB DDR3",
+      "flash": "32MB SPI NOR (GD25Q256)",
+      "wifi": "MT7603 (2.4G) + MT7612 (5G)",
+      "ports": "3×GbE LAN + 1×GbE WAN + USB 3.0"
+    }
+  }
+]

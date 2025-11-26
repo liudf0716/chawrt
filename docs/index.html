@@ -339,263 +339,25 @@ make -j$(nproc)</code></pre>
         <section id="devices" class="section devices-section">
             <div class="container">
                 <h2 class="section-title">设备支持列表</h2>
-                <p class="section-desc">以下是 chawrt 已支持的设备型号及刷机教程。更多设备支持持续更新中。</p>
+                <p class="section-desc">以下是 chawrt 已支持的设备型号及刷机教程。点击设备查看详细刷机步骤。</p>
 
-                <div class="devices-grid">
-                    <!-- CMCC RAX3000M -->
-                    <details class="device-card">
-                        <summary class="device-header">
-                            <div class="device-info">
-                                <h3>CMCC RAX3000M</h3>
-                                <span class="device-chip">MediaTek MT7981</span>
-                            </div>
-                            <span class="expand-icon">▼</span>
-                        </summary>
-                        <div class="device-content">
-                            <div class="device-specs">
-                                <h4>设备规格</h4>
-                                <ul>
-                                    <li><strong>CPU:</strong> MediaTek MT7981B (2×ARM Cortex-A53 @ 1.3GHz)</li>
-                                    <li><strong>RAM:</strong> 256MB DDR3</li>
-                                    <li><strong>Flash:</strong> 128MB SPI NAND</li>
-                                    <li><strong>WiFi:</strong> MT7981 (2.4G) + MT7976 (5G) WiFi 6</li>
-                                    <li><strong>端口:</strong> 3×GbE LAN + 1×GbE WAN</li>
-                                </ul>
-                            </div>
-
-                            <div class="device-flash">
-                                <h4>刷机步骤</h4>
-                                <ol>
-                                    <li>
-                                        <strong>准备工作</strong>
-                                        <ul>
-                                            <li>下载 chawrt 固件：<code>cmcc-rax3000m-squashfs-factory.bin</code></li>
-                                            <li>准备网线连接电脑和路由器 LAN 口</li>
-                                            <li>备份原厂固件（可选）</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>进入 Breed/Uboot</strong>
-                                        <ul>
-                                            <li>断电状态下按住 Reset 键</li>
-                                            <li>上电 5-10 秒后松开 Reset</li>
-                                            <li>电脑 IP 设为 192.168.1.2，访问 192.168.1.1</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>刷入固件</strong>
-                                        <ul>
-                                            <li>在 Breed/Uboot 界面选择"固件更新"</li>
-                                            <li>上传 <code>factory.bin</code> 文件</li>
-                                            <li>等待刷写完成并重启</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>首次启动</strong>
-                                        <ul>
-                                            <li>等待 2-3 分钟系统初始化</li>
-                                            <li>访问 192.168.1.1 进入 LuCI 界面</li>
-                                            <li>默认无密码，首次登录需设置</li>
-                                        </ul>
-                                    </li>
-                                </ol>
-                            </div>
-
-                            <div class="device-recovery">
-                                <h4>恢复原厂</h4>
-                                <p>如需恢复原厂固件，可在 Breed/Uboot 中刷入官方固件备份，或使用电信运营商提供的恢复工具。</p>
-                            </div>
-
-                            <div class="device-faq">
-                                <h4>常见问题</h4>
-                                <details>
-                                    <summary>刷机后无法启动</summary>
-                                    <p>检查是否使用了正确的固件型号，RAX3000M 需使用专用固件。如 Breed 仍可访问，重新刷入尝试。</p>
-                                </details>
-                                <details>
-                                    <summary>WiFi 无法使用</summary>
-                                    <p>首次启动后需在 LuCI 界面手动配置 WiFi SSID 和密码，然后启用无线。</p>
-                                </details>
-                            </div>
-                        </div>
-                    </details>
-
-                    <!-- FastRhino R66S -->
-                    <details class="device-card">
-                        <summary class="device-header">
-                            <div class="device-info">
-                                <h3>FastRhino R66S</h3>
-                                <span class="device-chip">Rockchip RK3568</span>
-                            </div>
-                            <span class="expand-icon">▼</span>
-                        </summary>
-                        <div class="device-content">
-                            <div class="device-specs">
-                                <h4>设备规格</h4>
-                                <ul>
-                                    <li><strong>CPU:</strong> Rockchip RK3568 (4×ARM Cortex-A55 @ 2.0GHz)</li>
-                                    <li><strong>RAM:</strong> 1GB/2GB/4GB DDR4</li>
-                                    <li><strong>Flash:</strong> 8GB eMMC + TF 卡槽</li>
-                                    <li><strong>网络:</strong> 2×2.5GbE (RTL8125B)</li>
-                                    <li><strong>扩展:</strong> USB 3.0, HDMI</li>
-                                </ul>
-                            </div>
-
-                            <div class="device-flash">
-                                <h4>刷机步骤</h4>
-                                <ol>
-                                    <li>
-                                        <strong>准备工作</strong>
-                                        <ul>
-                                            <li>下载 chawrt 固件：<code>r66s-squashfs-sysupgrade.img.gz</code></li>
-                                            <li>准备 TF 卡（建议 8GB 以上，Class 10）</li>
-                                            <li>下载烧录工具：balenaEtcher 或 Rufus</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>制作启动卡</strong>
-                                        <ul>
-                                            <li>解压 <code>.img.gz</code> 得到 <code>.img</code> 文件</li>
-                                            <li>使用烧录工具将镜像写入 TF 卡</li>
-                                            <li>等待写入完成并校验</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>启动系统</strong>
-                                        <ul>
-                                            <li>插入 TF 卡到 R66S</li>
-                                            <li>上电启动，系统将从 TF 卡引导</li>
-                                            <li>等待 LED 指示灯稳定</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>写入 eMMC（可选）</strong>
-                                        <ul>
-                                            <li>SSH 登录：<code>ssh root@192.168.1.1</code></li>
-                                            <li>执行安装脚本：<code>install-to-emmc.sh</code></li>
-                                            <li>完成后移除 TF 卡重启</li>
-                                        </ul>
-                                    </li>
-                                </ol>
-                            </div>
-
-                            <div class="device-recovery">
-                                <h4>恢复原厂</h4>
-                                <p>使用 Rockchip 线刷工具和官方固件包恢复 eMMC。或直接使用官方固件 TF 卡启动。</p>
-                            </div>
-
-                            <div class="device-faq">
-                                <h4>常见问题</h4>
-                                <details>
-                                    <summary>TF 卡无法启动</summary>
-                                    <p>检查 TF 卡是否正确烧录，尝试重新烧录或更换 TF 卡。确认 R66S 支持 TF 卡启动（部分批次可能需要修改 bootloader）。</p>
-                                </details>
-                                <details>
-                                    <summary>2.5G 网卡无法识别</summary>
-                                    <p>确认内核已包含 RTL8125 驱动。可在 LuCI 的系统日志中查看网卡识别情况。</p>
-                                </details>
-                            </div>
-                        </div>
-                    </details>
-
-                    <!-- Newifi D2 -->
-                    <details class="device-card">
-                        <summary class="device-header">
-                            <div class="device-info">
-                                <h3>Newifi D2</h3>
-                                <span class="device-chip">MediaTek MT7621</span>
-                            </div>
-                            <span class="expand-icon">▼</span>
-                        </summary>
-                        <div class="device-content">
-                            <div class="device-specs">
-                                <h4>设备规格</h4>
-                                <ul>
-                                    <li><strong>CPU:</strong> MediaTek MT7621AT (2×MIPS 1004Kc @ 880MHz)</li>
-                                    <li><strong>RAM:</strong> 512MB DDR3</li>
-                                    <li><strong>Flash:</strong> 32MB SPI NOR (GD25Q256)</li>
-                                    <li><strong>WiFi:</strong> MT7603 (2.4G) + MT7612 (5G)</li>
-                                    <li><strong>端口:</strong> 3×GbE LAN + 1×GbE WAN + USB 3.0</li>
-                                </ul>
-                            </div>
-
-                            <div class="device-flash">
-                                <h4>刷机步骤</h4>
-                                <ol>
-                                    <li>
-                                        <strong>准备工作</strong>
-                                        <ul>
-                                            <li>下载 chawrt 固件：<code>newifi-d2-squashfs-sysupgrade.bin</code></li>
-                                            <li>确认已刷入 Breed 引导（强烈推荐）</li>
-                                            <li>网线连接电脑和路由器</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>进入 Breed</strong>
-                                        <ul>
-                                            <li>断电按住 Reset 键</li>
-                                            <li>上电 5 秒后松开</li>
-                                            <li>浏览器访问 192.168.1.1</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>刷入固件</strong>
-                                        <ul>
-                                            <li>选择"固件更新"</li>
-                                            <li>勾选"自动重启"</li>
-                                            <li>上传固件并刷写</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <strong>访问系统</strong>
-                                        <ul>
-                                            <li>等待重启完成（约 2 分钟）</li>
-                                            <li>访问 192.168.1.1</li>
-                                            <li>初次登录设置密码</li>
-                                        </ul>
-                                    </li>
-                                </ol>
-                            </div>
-
-                            <div class="device-recovery">
-                                <h4>恢复原厂</h4>
-                                <p>如已刷入 Breed，可在 Breed 界面刷入原厂固件备份。未刷 Breed 的设备可使用官方救砖工具恢复。</p>
-                            </div>
-
-                            <div class="device-faq">
-                                <h4>常见问题</h4>
-                                <details>
-                                    <summary>如何刷入 Breed</summary>
-                                    <p>搜索"Newifi D2 Breed 刷入教程"，通常可通过官方固件漏洞或 TTL 串口刷入。Breed 可避免变砖风险。</p>
-                                </details>
-                                <details>
-                                    <summary>USB 3.0 无法识别硬盘</summary>
-                                    <p>检查是否安装了 USB 存储相关内核模块（kmod-usb-storage、kmod-fs-ext4 等）。部分固件默认未包含。</p>
-                                </details>
-                            </div>
-                        </div>
-                    </details>
-
-                    <!-- 更多设备占位 -->
-                    <div class="device-card device-placeholder">
-                        <div class="device-header">
-                            <div class="device-info">
-                                <h3>更多设备支持</h3>
-                                <span class="device-chip">持续更新中</span>
-                            </div>
-                        </div>
-                        <div class="device-content">
-                            <p>chawrt 正在适配更多设备型号，包括但不限于：</p>
+                <div id="device-list" class="devices-grid-simple">
+                    <!-- 设备列表将通过 JavaScript 动态加载 -->
+                    <noscript>
+                        <div class="no-js-fallback">
+                            <p>设备列表需要 JavaScript 支持。请启用 JavaScript 或访问以下链接查看设备：</p>
                             <ul>
-                                <li>Xiaomi 路由器系列</li>
-                                <li>Redmi 路由器系列</li>
-                                <li>NanoPi 系列</li>
-                                <li>Orange Pi 系列</li>
-                                <li>其他 MediaTek / Rockchip 平台设备</li>
+                                <li><a href="devices/cmcc-rax3000m.html">CMCC RAX3000M</a></li>
+                                <li><a href="devices/fastrhino-r66s.html">FastRhino R66S</a></li>
+                                <li><a href="devices/newifi-d2.html">Newifi D2</a></li>
                             </ul>
-                            <p>如有设备适配需求或愿意贡献设备支持，欢迎在 <a href="https://github.com/liudf0716/chawrt/issues" target="_blank">GitHub Issues</a> 中提出。</p>
                         </div>
-                    </div>
+                    </noscript>
+                </div>
+                
+                <div class="more-devices">
+                    <h3>更多设备支持</h3>
+                    <p>chawrt 正在适配更多设备型号。如有设备适配需求或愿意贡献设备支持，欢迎在 <a href="https://github.com/liudf0716/chawrt/issues" target="_blank">GitHub Issues</a> 中提出。</p>
                 </div>
             </div>
         </section>
@@ -643,5 +405,7 @@ make -j$(nproc)</code></pre>
             </div>
         </div>
     </footer>
+    
+    <script src="js/devices.js"></script>
 </body>
 </html>
