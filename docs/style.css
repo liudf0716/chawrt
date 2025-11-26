@@ -1294,15 +1294,7 @@ tr:hover {
     transform: translateY(-4px);
 }
 
-.qr-code {
-    width: 280px;
-    height: 280px;
-    border-radius: 8px;
-    background-color: #fff;
-    padding: 8px;
-    margin-bottom: 16px;
-    display: block;
-}
+
 
 .qr-caption {
     font-size: 0.95rem;
@@ -1328,12 +1320,7 @@ tr:hover {
     }
 }
 
-@media (max-width: 480px) {
-    .qr-code {
-        width: 200px;
-        height: 200px;
-    }
-}
+
 
 /* 设备详情页联系 CTA */
 .contact-cta {
@@ -1433,22 +1420,39 @@ tr:hover {
     }
 }
 
-/* 增大 QR 码尺寸 */
+/* QR 码样式 - 保持原图比例 */
 .qr-code {
-    width: 320px !important;
-    height: 320px !important;
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 12px;
+    margin-bottom: 16px;
+    display: block;
 }
 
+/* 响应式调整 - QR 码 */
 @media (max-width: 968px) {
     .qr-code {
-        width: 280px !important;
-        height: 280px !important;
+        max-width: 350px;
     }
 }
 
 @media (max-width: 480px) {
     .qr-code {
-        width: 240px !important;
-        height: 240px !important;
+        max-width: 100%;
+        padding: 8px;
     }
+}
+
+/* QR 卡片优化 - 适应竖版图片 */
+.qr-card {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: var(--transition);
+    max-width: 450px;
 }
