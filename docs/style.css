@@ -171,6 +171,17 @@ tr:hover {
     background-clip: text;
 }
 
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+}
+
 .tagline {
     color: var(--text-secondary);
     font-size: 0.95rem;

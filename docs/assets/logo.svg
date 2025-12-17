@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background Shield Shape -->
+  <path d="M256 0c-44 0-86 8-128 24C68 47 32 80 32 128v144c0 98 62 184 150 224 23 10 48 16 74 16s51-6 74-16c88-40 150-126 150-224V128c0-48-36-81-96-104C342 8 300 0 256 0z" fill="url(#primaryGradient)" opacity="0.1"/>
+  
+  <!-- WiFi Symbol within C shape -->
+  <g transform="translate(96, 96) scale(0.625)">
+    <!-- Wifi Arcs -->
+    <path d="M256 64C132.3 64 24 140 0 240l48 56c16-20 112-144 208-144s192 124 208 144l48-56C488 140 379.7 64 256 64z" fill="url(#primaryGradient)"/>
+    <path d="M256 192c-68 0-128 36-168 88l48 56c12-16 68-80 120-80s108 64 120 80l48-56c-40-52-100-88-168-88z" fill="#2563eb"/>
+    <path d="M256 320c-24 0-46 8-64 24l64 72 64-72c-18-16-40-24-64-24z" fill="#06b6d4"/>
+  </g>
+  
+  <!-- "C" letter integration via negative space or surrounding circle? Let's keep it simple with just the shield and wifi for now as a "verified connection" symbol -->
+  <path d="M256 460a28 28 0 0 1-28-28c0-15.5 12.5-28 28-28s28 12.5 28 28-12.5 28-28 28z" fill="#06b6d4"/>
+</svg>
