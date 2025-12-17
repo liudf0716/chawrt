@@ -194,10 +194,18 @@
                         <div class="step-content">
                             <h3>安装依赖</h3>
                             <p>在 Ubuntu/Debian 系统上安装编译所需的依赖包：</p>
+
+                            <h4>Ubuntu 24.04 (Python 3.12+)</h4>
                             <pre><code>sudo apt update
 sudo apt install build-essential clang flex bison g++ gawk \
 gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
 python3-setuptools rsync swig unzip zlib1g-dev file wget</code></pre>
+
+                            <h4>Ubuntu 22.04 (Old Python 3.xx)</h4>
+                            <pre><code>sudo apt update
+sudo apt install build-essential clang flex bison g++ gawk \
+gcc-multilib g++-multilib gettext git libncurses-dev libssl-dev \
+python3-distutils python3-setuptools rsync swig unzip zlib1g-dev file wget</code></pre>
                         </div>
                     </div>
 
@@ -207,7 +215,8 @@ python3-setuptools rsync swig unzip zlib1g-dev file wget</code></pre>
                             <h3>拉取源码</h3>
                             <p>克隆 chawrt 仓库到本地：</p>
                             <pre><code>git clone https://github.com/liudf0716/chawrt.git
-cd chawrt</code></pre>
+cd chawrt
+git checkout 24.10</code></pre>
                         </div>
                     </div>
 
