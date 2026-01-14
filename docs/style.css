@@ -1669,3 +1669,48 @@ tr:hover {
         padding: 16px;
     }
 }
+
+/* 打赏区域样式 */
+.donate-section {
+    text-align: center;
+}
+
+.donate-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.qr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    margin-top: 48px;
+}
+
+.qr-item {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 32px;
+    transition: var(--transition);
+}
+
+.qr-item:hover {
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow);
+    transform: translateY(-4px);
+}
+
+.qr-item .qr-code {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.qr-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
