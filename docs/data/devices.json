@@ -42,6 +42,20 @@
     }
   },
   {
+    "id": "xiaomi-ac2100",
+    "name": "小米 AC2100",
+    "chip": "MediaTek MT7621AT",
+    "platform": "mediatek",
+    "status": "stable",
+    "specs": {
+      "cpu": "MediaTek MT7621AT (2×MIPS 1004Kc @ 880MHz)",
+      "ram": "256MB DDR3",
+      "flash": "128MB SPI NOR",
+      "wifi": "2.4GHz 2×2 802.11n (300Mbps) + 5GHz 3×3 802.11ac (1733Mbps)",
+      "ports": "4×GbE LAN + 1×GbE WAN"
+    }
+  },
+  {
     "id": "nokia-ea0326gmp",
     "name": "诺基亚 EA0326GMP",
     "chip": "MediaTek MT7981B",
