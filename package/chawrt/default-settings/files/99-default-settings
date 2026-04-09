@@ -1,0 +1,199 @@
+#!/bin/sh
+
+# Constants
+HOSTNAME="chawrt"
+TIMEZONE="CST-8"
+ZONENAME="Asia/Shanghai"
+NTP_SERVERS="
+ntp.tencent.com
+ntp1.aliyun.com
+ntp.ntsc.ac.cn
+cn.ntp.org.cn
+"
+
+# Initialize cha_init if not exists
+init_cha_settings() {
+	uci -q get system.@cha_init[0] > "/dev/null" || uci -q add system cha_init > "/dev/null"
+}
+
+# Configure system settings
+configure_system() {
+	uci -q batch <<-EOF
+		set system.@system[0].hostname="${HOSTNAME}"
+		set system.@system[0].timezone="${TIMEZONE}"
+		set system.@system[0].zonename="${ZONENAME}"
+		set system.@system[0].langue="zh_cn"
+		
+		delete system.ntp.server
+EOF
+
+	# Add NTP servers
+	for server in ${NTP_SERVERS}; do
+		uci -q add_list system.ntp.server="${server}"
+	done
+
+	# Mark as configured
+	uci -q batch <<-EOF
+		set system.@cha_init[0].system_chn="1"
+		commit system
+EOF
+}
+
+# Configure rpcd settings
+configure_rpcd() {
+	uci -q batch <<-EOF
+		set rpcd.@rpcd[0].timeout="300"
+		commit rpcd
+EOF
+}
+
+# Confgure uhttpd settings
+configure_uhttpd() {
+	uci -q batch <<-EOF
+		set uhttpd.main.script_timeout="300"
+		set uhttpd.main.network_timeout="300"
+		commit uhttpd
+EOF
+}
+
+# Configure firewall settings
+configure_firewall() {
+	# Add rules to allow SSH and HTTP(s) from WAN
+	uci -q batch <<-EOF
+		add firewall rule
+		set firewall.@rule[-1].name="Allow-SSH"
+		set firewall.@rule[-1].src="wan"
+		set firewall.@rule[-1].proto="tcp"
+		set firewall.@rule[-1].dest_port="22"
+		set firewall.@rule[-1].target="ACCEPT"
+		
+		add firewall rule
+		set firewall.@rule[-1].name="Allow-HTTP"
+		set firewall.@rule[-1].src="wan"
+		set firewall.@rule[-1].proto="tcp"
+		set firewall.@rule[-1].dest_port="80"
+		set firewall.@rule[-1].target="ACCEPT"
+
+		add firewall rule
+		set firewall.@rule[-1].name="Allow-HTTPS"
+		set firewall.@rule[-1].src="wan"
+		set firewall.@rule[-1].proto="tcp"
+		set firewall.@rule[-1].dest_port="443"
+		set firewall.@rule[-1].target="ACCEPT"
+		
+		commit firewall
+EOF	
+}
+
+# Configure network settings
+configure_network() {
+	uci -q batch <<-EOF
+		set network.lan.ipaddr="192.168.80.1"
+		set network.lan.netmask="255.255.255.0"
+		commit network
+EOF
+}
+
+# Configure shinit settings
+configure_shinit() {
+	# add alias to /etc/shinit for common commands
+	[ -f /etc/shinit ] && {
+		echo "alias fopkg=opkg --force-reinstall " >> /etc/shinit
+	}
+}
+
+# Configure mesh settings, add mesh network
+configure_mesh() {
+	[ -f /etc/config/wireless ] || return
+
+	uci -q batch <<-EOF
+		add wireless wifi-iface
+		set wireless.@wifi-iface[-1].device='radio0'
+		set wireless.@wifi-iface[-1].network='lan'
+		set wireless.@wifi-iface[-1].mode='mesh'
+		set wireless.@wifi-iface[-1].encryption='sae'
+		set wireless.@wifi-iface[-1].key='apfree-wifidog'
+		set wireless.@wifi-iface[-1].mesh_id='chawrt-aw-mesh'
+		set wireless.@wifi-iface[-1].mesh_fwding='1'
+		set wireless.@wifi-iface[-1].mesh_rssi_threshold='0'
+		set wireless.@wifi-iface[-1].disabled='1'
+		rename wireless.@wifi-iface[-1]='default_radio0'
+		add wireless wifi-iface
+		set wireless.@wifi-iface[-1].device='radio1'
+		set wireless.@wifi-iface[-1].network='lan'
+		set wireless.@wifi-iface[-1].mode='mesh'
+		set wireless.@wifi-iface[-1].encryption='sae'
+		set wireless.@wifi-iface[-1].key='apfree-wifidog'
+		set wireless.@wifi-iface[-1].mesh_id='chawrt-aw-mesh'
+		set wireless.@wifi-iface[-1].mesh_fwding='1'
+		set wireless.@wifi-iface[-1].mesh_rssi_threshold='0'
+		set wireless.@wifi-iface[-1].disabled='1'
+		rename wireless.@wifi-iface[-1]='default_radio1'
+		commit wireless
+EOF
+}
+
+# Add wifi ssid 
+add_wifi_ssid() {
+	[ -f /etc/config/wireless ] || return
+
+	uci -q batch <<-EOF
+		add wireless wifi-iface
+		set wireless.@wifi-iface[-1].device='radio0'
+		set wireless.@wifi-iface[-1].network='lan'
+		set wireless.@wifi-iface[-1].mode='ap'
+		set wireless.@wifi-iface[-1].ssid='chawrt-2.4G'
+		set wireless.@wifi-iface[-1].encryption='none'
+		rename wireless.@wifi-iface[-1]='wifnet0'
+		add wireless wifi-iface
+		set wireless.@wifi-iface[-1].device='radio1'
+		set wireless.@wifi-iface[-1].network='lan'
+		set wireless.@wifi-iface[-1].mode='ap'
+		set wireless.@wifi-iface[-1].ssid='chawrt-5G'
+		set wireless.@wifi-iface[-1].encryption='none'
+		rename wireless.@wifi-iface[-1]='wifnet1'
+		set wireless.radio0.disabled='0'
+		set wireless.radio1.disabled='0'
+		commit wireless
+EOF
+	wifi reload
+}
+
+main() {
+	init_cha_settings
+	
+	# If system settings configured, skip
+	if [ "$(uci -q get system.@cha_init[0].system_chn)" = "1" ]; then
+		echo "System settings already configured, skip."
+		return
+	fi
+
+	# Configure system settings
+	configure_system
+
+	# Configure network settings
+	if [ "$(uci -q get network.lan.proto)" = "static" ]; then
+		configure_network
+	fi
+
+	# Check WAN protocol and configure firewall
+	if [ "$(uci -q get network.wan.proto)" = "dhcp" ]; then
+		configure_firewall
+	fi
+
+	# Configure rpcd settings
+	configure_rpcd
+
+	# Configure uhttpd settings
+	configure_uhttpd
+
+	# Configure mesh settings
+	configure_mesh
+
+	# Add wifi ssid
+	add_wifi_ssid
+}
+
+main
+
+exit 0
