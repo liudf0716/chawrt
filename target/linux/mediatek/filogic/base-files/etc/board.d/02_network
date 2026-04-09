@@ -208,6 +208,9 @@ mediatek_setup_interfaces()
 	zyxel,wx5600-t0-ubootmod)
 		ucidef_set_interface_lan "lan1 lan2"
 		;;
+	clawwifi,m3000-v1)
+		ucidef_set_interfaces_lan_wan "lan0 lan1 lan2 lan3" eth1
+		;;
 	*)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" wan
 		;;
@@ -277,6 +280,11 @@ mediatek_setup_macs()
 		lan_mac=$(mtd_get_mac_ascii factory lanMac)
 		wan_mac=$(macaddr_add "$lan_mac" 1)
 		label_mac=$wan_mac
+		;;
+	clawwifi,m3000-v1)
+		label_mac=$(mtd_get_mac_binary "Factory" 0x4)
+		lan_mac=$label_mac
+		wan_mac=$(macaddr_add "$label_mac" 3)
 		;;
 	ruijie,rg-x60-pro)
 		label_mac=$(mtd_get_mac_ascii product_info ethaddr)

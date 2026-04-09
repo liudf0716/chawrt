@@ -163,6 +163,23 @@ define Device/abt_asr3000
 endef
 TARGET_DEVICES += abt_asr3000
 
+define Device/clawwifi_m3000-v1
+  DEVICE_VENDOR := ClawWiFi
+  DEVICE_MODEL := M3000-v1
+  DEVICE_DTS := mt7981b-clawwifi-m3000-v1
+  DEVICE_DTS_DIR := ../dts
+  SUPPORTED_DEVICES += mediatek,mt7981-spim-snand-rfb
+  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware clawwrt apfree-wifidog xfrpc
+  UBINIZE_OPTS := -E 5
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  KERNEL_IN_UBI := 1
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(IMAGE/sysupgrade.bin) | cetron-header rd30 M3000V1
+endef
+TARGET_DEVICES += clawwifi_m3000-v1
+
 define Device/acelink_ew-7886cax
   DEVICE_VENDOR := Acelink
   DEVICE_MODEL := EW-7886CAX
