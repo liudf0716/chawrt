@@ -35,3 +35,5 @@ git-src
 .cproject
 .ccache
 .vscode*
+*.config
+.github/copilot-instructions.md
