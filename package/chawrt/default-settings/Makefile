@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 # Package information
 PKG_NAME:=default-settings
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_LICENSE:=GPL-2.0-only
 
 # Include OpenWrt package macros
@@ -21,7 +21,8 @@ define Package/default-settings
           +@LUCI_LANG_zh_Hans \
           +luci-i18n-base-zh-cn \
           +luci-app-apfree-wifidog \
-          +luci-app-xfrpc
+          +luci-app-xfrpc \
+          +aw-bpf
   PKGARCH:=all
 endef
 
