@@ -37,3 +37,7 @@ git-src
 .vscode*
 *.config
 .github/copilot-instructions.md
+prepare-ok3588-firmware.sh
+send-openwrt-rootfs-2-ok3588.sh
+scripts/check_high_cpu.sh
+scripts/free_memory.sh
