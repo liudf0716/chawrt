@@ -69,7 +69,14 @@ sub projectsmirrors {
 	my $mirror = decode_json $mirror_json;
 
 	foreach (@{$mirror->{$project}}) {
-		push @mirrors, $_ . "/" . ($append or "");
+		my $path = $append // "";
+		# TUNA kernel mirror is kernel.org's pub/linux/kernel, not pub/.
+		# @KERNEL URLs append linux/kernel/vX.x; strip that prefix for TUNA.
+		if ($project eq '@KERNEL' &&
+		    $_ eq 'https://mirrors.tuna.tsinghua.edu.cn/kernel') {
+			$path =~ s{^linux/kernel/}{};
+		}
+		push @mirrors, $_ . "/" . $path;
 	}
 }
 
@@ -119,18 +126,65 @@ sub select_tool {
 	return "wget";
 }
 
+# USTC serves a JS "Verifying your browser" page for some large files.
+# The page sets cookie addr=<client-ip> and reloads; curl/wget need that cookie.
+my $USTC_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0';
+my $ustc_addr_cookie;
+
+sub ustc_addr_cookie {
+	my $url = shift;
+	return $ustc_addr_cookie if defined $ustc_addr_cookie;
+	$ustc_addr_cookie = '';
+
+	# Range request so a successful file download is not pulled into memory.
+	my $body = '';
+	if ($download_tool eq "curl") {
+		$body = `curl -sL --connect-timeout 5 --max-time 15 -A '$USTC_UA' -r 0-65535 '$url' 2>/dev/null`;
+	} elsif ($download_tool eq "wget") {
+		$body = `wget -q -O - --content-on-error --timeout=5 --user-agent='$USTC_UA' --header='Range: bytes=0-65535' '$url' 2>/dev/null`;
+	}
+	return $ustc_addr_cookie unless defined $body && $body ne '';
+
+	if ($body =~ /document\.cookie\s*=\s*"addr=([^";]+)/) {
+		$ustc_addr_cookie = $1;
+	} elsif ($body =~ /Your IP address is\s+([0-9a-fA-F:.]+)/) {
+		$ustc_addr_cookie = $1;
+	}
+	return $ustc_addr_cookie;
+}
+
+sub ustc_extra_opts {
+	my $url = shift;
+	return () unless $url =~ m{://mirrors\.ustc\.edu\.cn/};
+
+	my $addr = ustc_addr_cookie($url);
+	if ($download_tool eq "curl") {
+		return ('-A', $USTC_UA, $addr ? ('-b', "addr=$addr") : ());
+	} elsif ($download_tool eq "wget") {
+		return ("--user-agent=$USTC_UA",
+			$addr ? ("--header=Cookie: addr=$addr") : ());
+	} elsif ($download_tool eq "aria2c") {
+		return ("--user-agent=$USTC_UA",
+			$addr ? ("--header=Cookie: addr=$addr") : ());
+	}
+	return ();
+}
+
 sub download_cmd {
 	my $url = shift;
 	my $filename = shift;
+	my @ustc = ustc_extra_opts($url);
 
 	if ($download_tool eq "curl") {
 		return (qw(curl -f --connect-timeout 5 --retry 3 --location),
 			$check_certificate ? () : '--insecure',
+			@ustc,
 			shellwords($ENV{CURL_OPTIONS} || ''),
 			$url);
 	} elsif ($download_tool eq "wget") {
 		return (qw(wget --tries=3 --timeout=5 --output-document=-),
 			$check_certificate ? () : '--no-check-certificate',
+			@ustc,
 			shellwords($ENV{WGET_OPTIONS} || ''),
 			$url);
 	} elsif ($download_tool eq "aria2c") {
@@ -144,6 +198,7 @@ sub download_cmd {
 			"touch $ENV{'TMPDIR'}/aria2c/${rfn}_spp;",
 			qw(aria2c --stderr -c -x2 -s10 -j10 -k1M), $url, $additional_mirrors,
 			$check_certificate ? () : '--check-certificate=false',
+			@ustc,
 			"--server-stat-of=$ENV{'TMPDIR'}/aria2c/${rfn}_spp",
 			"--server-stat-if=$ENV{'TMPDIR'}/aria2c/${rfn}_spp",
 			"--daemon=false --no-conf", shellwords($ENV{ARIA2C_OPTIONS} || ''),
