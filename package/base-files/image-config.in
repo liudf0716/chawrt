@@ -173,6 +173,7 @@ if VERSIONOPT
 	config VERSION_DIST
 		string
 		prompt "Release distribution"
+		default "chawrt" if PACKAGE_default-settings
 		default "OpenWrt"
 		help
 			This is the name of the release distribution.
@@ -226,6 +227,8 @@ if VERSIONOPT
 	config VERSION_MANUFACTURER
 		string
 		prompt "Manufacturer name"
+		default "chawrt" if PACKAGE_default-settings
+		default "OpenWrt"
 		help
 			This is the manufacturer name embedded in /etc/device_info
 			Useful for OEMs building OpenWrt based firmware
