@@ -159,7 +159,16 @@ EOF
 	wifi reload
 }
 
+# Configure banner
+configure_banner() {
+	[ -f /etc/banner.chawrt ] && {
+		cp -f /etc/banner.chawrt /etc/banner
+		rm -f /etc/banner.chawrt
+	}
+}
+
 main() {
+	configure_banner
 	init_cha_settings
 	
 	# If system settings configured, skip

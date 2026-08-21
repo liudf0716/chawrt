@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 # Package information
 PKG_NAME:=default-settings
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 PKG_LICENSE:=GPL-2.0-only
 
 # Include OpenWrt package macros
@@ -38,8 +38,8 @@ endef
 # Installation
 define Package/default-settings/install
 	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DATA) ./files/banner $(1)/etc/banner
-	$(VERSION_SED_SCRIPT) $(1)/etc/banner
+	$(INSTALL_DATA) ./files/banner $(1)/etc/banner.chawrt
+	$(VERSION_SED_SCRIPT) $(1)/etc/banner.chawrt
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/99-default-settings $(1)/etc/uci-defaults/
 	$(INSTALL_BIN) ./files/80-in500-in500r-5g-settings $(1)/etc/uci-defaults/
