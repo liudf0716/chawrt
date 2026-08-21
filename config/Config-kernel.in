@@ -438,6 +438,7 @@ config KERNEL_DEBUG_INFO
 
 config KERNEL_DEBUG_INFO_BTF
 	bool "Enable additional BTF type information"
+	default y if !SMALL_FLASH
 	depends on !HOST_OS_MACOS
 	depends on KERNEL_DEBUG_INFO && !KERNEL_DEBUG_INFO_REDUCED
 	select DWARVES
@@ -464,7 +465,7 @@ config KERNEL_MODULE_ALLOW_BTF_MISMATCH
 
 config KERNEL_DEBUG_INFO_REDUCED
 	bool "Reduce debugging information"
-	default y
+	default y if SMALL_FLASH
 	depends on KERNEL_DEBUG_INFO
 	help
 	  If you say Y here gcc is instructed to generate less debugging

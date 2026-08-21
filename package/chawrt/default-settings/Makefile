@@ -23,7 +23,6 @@ define Package/default-settings
           +luci-i18n-base-zh-cn \
           +luci-app-apfree-wifidog \
           +luci-app-xfrpc \
-          +aw-bpf \
           +luci-theme-argon \
           +luci-app-clawwrt \
           +PACKAGE_strongswan:luci-app-strongswan-swanctl \
