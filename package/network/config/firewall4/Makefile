@@ -43,6 +43,10 @@ endef
 
 define Package/firewall4/install
 	$(CP) -a $(PKG_BUILD_DIR)/root/* $(1)/
+	$(INSTALL_DIR) $(1)/usr/share/firewall4
+	$(INSTALL_CONF) ./files/lan-syn-exempt.nft $(1)/usr/share/firewall4/lan-syn-exempt.nft
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/etc/uci-defaults/30-lan-syn-exempt $(1)/etc/uci-defaults/30-lan-syn-exempt
 endef
 
 define Build/Compile

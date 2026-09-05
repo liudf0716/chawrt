@@ -1,0 +1,1 @@
+iifname "br-lan" tcp flags & (fin | syn | rst | ack) == syn accept comment "!chawrt: exempt lan syn from synflood limit"

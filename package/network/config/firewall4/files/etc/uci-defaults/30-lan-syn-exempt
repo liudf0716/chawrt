@@ -1,0 +1,16 @@
+#!/bin/sh
+# Exempt LAN-originated TCP SYN packets from the syn_flood rate limit so
+# bulk client onboarding (portal, DHCP+DNS bursts) is not throttled at
+# 25 new SYNs/s.  WAN-side SYN-flood protection stays untouched.
+
+[ "$(uci -q get firewall.@defaults[0].syn_flood)" = "1" ] || exit 0
+uci -q get firewall.lan_syn_exempt >/dev/null && exit 0
+
+uci -q add firewall include >/dev/null || exit 0
+uci rename firewall.@include[-1]="lan_syn_exempt"
+uci set firewall.lan_syn_exempt.type="nftables"
+uci set firewall.lan_syn_exempt.path="/usr/share/firewall4/lan-syn-exempt.nft"
+uci set firewall.lan_syn_exempt.position="chain-pre"
+uci set firewall.lan_syn_exempt.chain="input"
+uci set firewall.lan_syn_exempt.enabled="1"
+uci commit firewall
