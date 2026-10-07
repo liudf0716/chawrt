@@ -88,7 +88,7 @@ EOF
 # Configure network settings
 configure_network() {
 	uci -q batch <<-EOF
-		set network.lan.ipaddr="192.168.80.1"
+		set network.lan.ipaddr="192.168.8.1"
 		set network.lan.netmask="255.255.255.0"
 		commit network
 EOF
