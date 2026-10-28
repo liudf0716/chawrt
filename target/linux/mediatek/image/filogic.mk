@@ -169,7 +169,8 @@ define Device/clawwifi_m3000-v1
   DEVICE_DTS := mt7981b-clawwifi-m3000-v1
   DEVICE_DTS_DIR := ../dts
   SUPPORTED_DEVICES += mediatek,mt7981-spim-snand-rfb
-  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware xdns-bpf xkcptun apfree-wifidog xfrpc
+  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware \
+	kmod-usb3 xdns-bpf xkcptun apfree-wifidog xfrpc
   UBINIZE_OPTS := -E 5
   BLOCKSIZE := 128k
   PAGESIZE := 2048
