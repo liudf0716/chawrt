@@ -173,7 +173,11 @@ ifdef CONFIG_JSON_CYCLONEDX_SBOM
 	); done
 endif
 endif
+ifneq ($(CONFIG_PER_FEED_REPO),)
 	$(call sha256sums,$(OUTPUT_DIR)/packages/$(ARCH_PACKAGES),1)
+else
+	$(call sha256sums,$(PACKAGE_DIR))
+endif
 
 $(curdir)/flags-install:= -j1
 
