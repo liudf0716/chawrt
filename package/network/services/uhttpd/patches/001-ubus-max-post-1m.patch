@@ -1,0 +1,11 @@
+--- a/ubus.c
++++ b/ubus.c
+@@ -35,6 +35,7 @@ static struct ubus_context *ctx;
+ static struct blob_buf buf;
+
+-#define UH_UBUS_MAX_POST_SIZE	65536
++/* LuCI AI chat posts tool schemas and history in one JSON-RPC body. */
++#define UH_UBUS_MAX_POST_SIZE	1048576
+ #define UH_UBUS_DEFAULT_SID	"00000000000000000000000000000000"
+
+ /* libubox blob attributes carry a 24 bit length field, so a single blob can
